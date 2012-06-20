@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 BACKEND = "10.13.37.143", 5050
 
+import fcntl
 import json
 import time
 import sys
@@ -9,6 +10,7 @@ from gevent import socket
 import events
 import commands
 import traceback
+import sys
 
 def LOG(line):
   print >>sys.stderr, line
@@ -81,5 +83,13 @@ def main():
     time.sleep(5)
 
 if __name__ == "__main__":
-  main()
-
+  with open(".lock", "w") as f:
+    try:
+      fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError:
+      LOG("already running, exiting...")
+      sys.exit(1)
+    try:  
+      main()
+    finally:
+     fcntl.lockf(f, fcntl.LOCK_UN)
