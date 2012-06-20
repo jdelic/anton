@@ -6,11 +6,13 @@ import json
 import time
 import sys
 import util
-from gevent import socket
+from gevent import socket, monkey
 import events
 import commands
 import traceback
 import sys
+
+monkey.patch_socket()
 
 def LOG(line):
   print >>sys.stderr, line

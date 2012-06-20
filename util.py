@@ -1,5 +1,7 @@
 import os
 import codecs
+import HTMLParser
+import re
 
 def split_lines(data, **kwargs):
   result = []
@@ -60,3 +62,16 @@ def decode_irc(x):
     return x.decode("utf-8", "mixed-iso-8859-1")
   except UnicodeDecodeError:
     return x
+
+def strip_html(x):
+  d = "".join(x.findAll(text=True))
+  d = HTMLParser.HTMLParser().unescape(d)
+  d = d.replace("\r", " ").replace("\n", " ")
+  d = re.sub("\s{2,}", " ", d).strip()
+  return d.encode("utf-8")
+
+WHITESPACE_RE = re.compile("[ \n\t]+")
+
+def tidy_whitespace(x):
+  return WHITESPACE_RE.sub(" ", x)
+
