@@ -22,3 +22,4 @@ def chanmsg_handler(type, irc, obj):
     callback(traceback.format_exc())
 
 import commands.learndb
+import commands.thanks
