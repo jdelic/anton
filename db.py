@@ -1,33 +1,37 @@
 import util
-import dumbdbm
-import shelve
+import sqlite3
 
 class DB(object):
   def __init__(self, name):
-    self.d = dumbdbm.open(util.data_file(name))
+    self.d = sqlite3.connect(util.data_file(name) + ".sqlite", isolation_level=None)
+    self.c = self.d.cursor()
+    try:
+      self.c.execute("CREATE TABLE store (key PRIMARY KEY, value);")
+    except sqlite3.OperationalError:
+      pass
 
   def __setitem__(self, key, value):
-    self.d[self.t(key)] = self.t(value)
-    self.d.sync()
+    self.c.execute("REPLACE INTO store (key, value) VALUES (?, ?)", (key, value))
 
   def __getitem__(self, key):
-    return self.de(self.d[self.t(key)])
+    self.c.execute("SELECT value FROM store WHERE key = ?", (key, ))
+    row = self.c.fetchone()
+    if row is None:
+      raise KeyError(key)
+    return row[0]
 
   def get(self, key, default=None):
-    key = self.t(key)
-    if not key in self.d:
+    try:
+      return self[key]
+    except KeyError:
       return default
-    return self.de(self.d[key])
 
   def __contains__(self, key):
-    return self.t(key) in self.d
+    try:
+      self[key]
+      return True
+    except KeyError:
+      return False
 
   def __delitem__(self, key):
-    del self.d[self.t(key)]
-    self.d.sync()
-
-  def t(self, value):
-    return value.encode("utf8")
-
-  def de(self, value):
-    return value.decode("utf8")
+    self.c.execute("DELETE FROM store WHERE key = ?", (key, ))
