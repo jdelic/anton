@@ -1,9 +1,6 @@
 import match
 import commands
-import anydbm
 import util
-import shelve
-import dumbdbm
 import db
 import events
 
