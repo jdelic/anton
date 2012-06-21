@@ -1,5 +1,4 @@
 EVENTS = {}
-STOP, CONTINUE = True, False
 
 def register(type):
   def decorate(fn):

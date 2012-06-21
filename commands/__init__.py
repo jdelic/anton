@@ -1,6 +1,6 @@
 import events
 import traceback
-from events import STOP, CONTINUE
+STOP, CONTINUE = True, False
 
 COMMANDS = []
 
