@@ -6,11 +6,12 @@ import json
 import time
 import sys
 import util
-from gevent import socket, monkey
 import events
 import commands
 import traceback
 import sys
+import gevent
+from gevent import socket, monkey
 
 monkey.patch_socket()
 
@@ -78,7 +79,8 @@ def main():
         except ValueError:
           traceback.print_exc()
           continue
-        process_line(irc, j["type"], j.get("data"))
+
+        gevent.spawn(process_line, irc, j["type"], j.get("data"))
       
     irc.socket = None
     LOG("disconnected, retrying in 5s...")
