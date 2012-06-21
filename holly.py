@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-BACKEND = "10.13.37.143", 5050
-
 import fcntl
 import json
 import time
@@ -11,6 +9,7 @@ import commands
 import traceback
 import sys
 import gevent
+import config
 from gevent import socket, monkey
 
 monkey.patch_socket()
@@ -57,7 +56,7 @@ def main():
 
   while True:
     LOG("connecting...")
-    s = connect(BACKEND)
+    s = connect(config.BACKEND)
     irc.socket = s
 
     LOG("connected!")

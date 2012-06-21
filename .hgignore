@@ -3,3 +3,4 @@ syntax: glob
 data
 holly.log
 .lock
+config.py
