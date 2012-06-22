@@ -45,7 +45,7 @@ class IRC(object):
       split_data.extend(x.replace("\r", "").split("\n"))
 
     for x in util.split_lines(split_data):
-      fn(x)
+      fn(util.decode_irc(x, redecode=False))
     return 
 
 def process_line(irc, type, obj):

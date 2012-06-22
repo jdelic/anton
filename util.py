@@ -55,10 +55,13 @@ def utf8_iso8859_1(data, table=dict((x, x.decode("iso-8859-1")) for x in map(chr
 
 codecs.register_error("mixed-iso-8859-1", utf8_iso8859_1)
 
-def decode_irc(x):
+def decode_irc(x, redecode=True):
   try:
     if isinstance(x, unicode):
-      x = x.encode("iso-8859-1")
+      if redecode:
+        x = x.encode("iso-8859-1")
+      else:
+        return x
     return x.decode("utf-8", "mixed-iso-8859-1")
   except UnicodeDecodeError:
     return x
