@@ -39,3 +39,4 @@ import commands.learndb
 import commands.thanks
 import commands.urban_dictionary
 import commands.google
+import commands.zalgo
