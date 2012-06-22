@@ -72,7 +72,7 @@ def main():
 
     LOG("connected!")
 
-    irc.wallusers("holly online")
+    irc.wallops("holly online")
     buf = ""
     while True:
       line = s.recv(8192)
