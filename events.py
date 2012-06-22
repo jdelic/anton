@@ -1,3 +1,5 @@
+STOP, CONTINUE = True, False
+
 EVENTS = {}
 
 def register(type):
