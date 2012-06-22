@@ -27,8 +27,16 @@ class IRC(object):
     self.socket.send(json.dumps({"type": type, "data": obj}, ensure_ascii=False).encode("utf8") + "\n")
 
   def chanmsg(self, channel, message):
-    fn = lambda message: self.write("chanmsg", {"channel": channel, "message": message})
     self.split_send(lambda message: self.write("chanmsg", {"channel": channel, "message": message}), message)
+
+  def privnotice(self, target, message):
+    self.split_send(lambda message: self.write("privnotice", {"target": target, "message": message}), message)
+
+  def wallusers(self, message):
+    self.split_send(lambda message: self.write("wallusers", {"message": message}), message)
+
+  def wallops(self, message):
+    self.split_send(lambda message: self.write("wallops", {"message": message}), message)
 
   @classmethod
   def split_send(cls, fn, data):
@@ -44,6 +52,9 @@ def process_line(irc, type, obj):
   if type == "chanmsg":
     obj["message"] = util.decode_irc(obj["message"])
     events.fire("chanmsg", irc, obj)
+  elif type == "privmsg":
+    obj["message"] = util.decode_irc(obj["message"])
+    events.fire("privmsg", irc, obj)
   elif type == "join":
     events.fire("join", irc, obj)
   elif type == "startup":
@@ -61,10 +72,11 @@ def main():
 
     LOG("connected!")
 
+    irc.wallusers("holly online")
     buf = ""
     while True:
       line = s.recv(8192)
-      if line is None:
+      if not line:
         break
 
       buf+=line
