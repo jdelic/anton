@@ -72,10 +72,10 @@ def main():
       buf = lines.pop(-1)
 
       for line in lines:
-        LOG("line: " + repr(line))
         try:
           j = json.loads(line, encoding="iso-8859-1")
         except ValueError:
+          LOG("line: " + repr(line))
           traceback.print_exc()
           continue
 
