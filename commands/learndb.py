@@ -119,7 +119,7 @@ def on_join(type, irc, obj):
   nick = obj["source"]["nick"]
 
   try:
-    value = lookup(nick, return_key=True)
+    value = lookup(nick)
   except KeyError:
     return
 
