@@ -20,7 +20,7 @@ else
   ulimit -c 999999999
   while true
   do
-    ./holly.py | tee -a holly.log
+    ./holly.py 2>&1 | tee -a holly.log
     logger holly crashed, restarting in 30 seconds
     echo holly crashed, restarting in 30 seconds
     sleep 30
