@@ -21,9 +21,9 @@ else
   while true
   do
     ./holly.py 2>&1 | tee -a holly.log
-    logger holly crashed, restarting in 30 seconds
-    echo holly crashed, restarting in 30 seconds
-    sleep 30
+    echo holly crashed, restarting in 5 seconds >> holly.log
+    echo holly crashed, restarting in 5 seconds
+    sleep 5
   done
 fi
 
