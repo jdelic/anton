@@ -4,7 +4,7 @@ import util
 import db
 import events
 
-DB = db.DB("learndb")
+DB = db.LowercaseDB("learndb")
 
 class BadQuotedDataException(Exception):
   pass

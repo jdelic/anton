@@ -35,3 +35,15 @@ class DB(object):
 
   def __delitem__(self, key):
     self.c.execute("DELETE FROM store WHERE key = ?", (key, ))
+
+class LowercaseDB(DB):
+  def __init__(self, *args, **kwargs): super(LowercaseDB, self).__init__(*args, **kwargs)
+
+  def __t(self, key):                  return key.lower()
+
+  def __getitem__(self, key):          return super(LowercaseDB, self).__getitem__(self.__t(key))
+  def get(self, key, default=None):    return super(LowercaseDB, self).get(self.__t(key), default)
+  def __contains__(self, key):         return super(LowercaseDB, self).__contains__(self.__t(key))
+  def __setitem__(self, key, value):   super(LowercaseDB, self).__setitem__(self.__t(key), value)
+  def __delitem__(self, key):          super(LowercaseDB, self).__delitem__(self.__t(key))
+
