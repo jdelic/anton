@@ -1,6 +1,7 @@
 import events
 import gevent
 import traceback
+import config
 
 from gevent.pywsgi import WSGIServer
 
@@ -13,6 +14,9 @@ def register(r):
   def decorate(fn):
     def new_fn(callback, env):
       path = env["PATH_INFO"]
+      if path.startswith(config.HTTP_ROOT):
+        path = path[len(config.HTTP_ROOT):]
+
       m = r.match(path)
       if not m:
         return events.CONTINUE

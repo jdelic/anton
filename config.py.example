@@ -1,1 +1,2 @@
 BACKEND = "10.13.37.143", 5050
+HTTP_ROOT = "/bot"
