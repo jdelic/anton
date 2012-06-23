@@ -10,8 +10,7 @@ import irc
 import http
 
 from log import *
-from gevent import socket, monkey
-from gevent.pywsgi import WSGIServer
+from gevent import monkey
 
 monkey.patch_socket()
 
@@ -21,8 +20,8 @@ def main():
 
   irc.client() # HACK
 
-  while True:
-    gevent.core.loop()
+#  while True:
+#    gevent.core.loop()
 
 if __name__ == "__main__":
   with open(".lock", "w") as f:
