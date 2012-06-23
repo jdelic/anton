@@ -1,7 +1,7 @@
-import match
+import commands
 import re
 
-@match.re(re.compile("^((th)anks|(ch)eers|(n)ight|(y)o|(n)o) [^aeiou]*([a-z]+)$", re.IGNORECASE))
+@commands.register(re.compile("^((th)anks|(ch)eers|(n)ight|(y)o|(n)o) [^aeiou]*([a-z]+)$", re.IGNORECASE))
 def thanks(callback, m):
   g = m.groups()
   for x in g[1:-1]:

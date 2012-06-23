@@ -2,7 +2,7 @@ import urllib
 import util
 from BeautifulSoup import BeautifulSoup as soup
 import urlparse
-import match
+import commands
 
 class AppURLopener(urllib.FancyURLopener):
   version = "Links"
@@ -11,7 +11,7 @@ class NoResultsException(Exception):
   pass
 
 
-@match.command(["!g", "!google"])
+@commands.register(["!g", "!google"])
 def google(callback, query):
   url = "http://www.google.com/search?q=%s&ie=UTF-8" % urllib.quote(query)
 

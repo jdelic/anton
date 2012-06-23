@@ -1,4 +1,4 @@
-import match
+import commands
 import urllib
 import util
 
@@ -7,7 +7,7 @@ from BeautifulSoup import BeautifulSoup as soup
 class NotDefinedException(Exception):
   pass
 
-@match.command("!ud")
+@commands.register("!ud")
 def urban_dictionary(callback, term):
   url = "http://www.urbandictionary.com/define.php?term=%s" % urllib.quote(term)
 

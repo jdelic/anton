@@ -1,7 +1,7 @@
 import random
-import match
+import commands
 
-@match.command("!zalgo")
+@commands.register("!zalgo")
 def zalgo_cmd(callback, message):
   return zalgo(message)
 

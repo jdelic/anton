@@ -1,4 +1,3 @@
-import match
 import commands
 import util
 import db
@@ -20,7 +19,7 @@ def quote_parse(key, value):
     key, value = v
   return key, value
 
-@match.command(["!add", "++"])
+@commands.register(["!add", "++"])
 def add(callback, key, value):
   try:
     key, value = quote_parse(key, value)
@@ -30,7 +29,7 @@ def add(callback, key, value):
   DB[key] = value
   return "got it!"
 
-@match.command("--")
+@commands.register("--")
 def remove(callback, key):
   if not key in DB:
     return "doesn't exist!"
@@ -64,7 +63,7 @@ def lookup(key, follow=True, return_key=False):
     if value is None:
       raise LookupException("error: @link broken at %s (stack: %s)" % (key, repr(stack)))
 
-@match.command("holly:")
+@commands.register("holly:")
 def query_bot(callback, key):
   try:
     value = lookup(key)
@@ -75,7 +74,7 @@ def query_bot(callback, key):
 
   return value
 
-@match.command("??")
+@commands.register("??")
 def query(callback, key):
   try:
     value = lookup(key)
@@ -86,7 +85,7 @@ def query(callback, key):
 
   return value
 
-@match.command("&&")
+@commands.register("&&")
 def query_no_follow(callback, key):
   try:
     value = lookup(key, follow=False)
@@ -97,7 +96,7 @@ def query_no_follow(callback, key):
 
   return value
 
-@match.command("++a")
+@commands.register("++a")
 def append(callback, key, value):
   try:
     key, value = quote_parse(key, value)

@@ -1,4 +1,4 @@
-import match
+import commands
 import urllib
 import util
 
@@ -7,7 +7,7 @@ from BeautifulSoup import BeautifulSoup as soup
 class NotDefinedException(Exception):
   pass
 
-@match.command("!slogan")
+@commands.register("!slogan")
 def slogan(callback, term):
   url = "http://thesurrealist.co.uk/slogan.cgi?word=%s" % urllib.quote(term)
 
