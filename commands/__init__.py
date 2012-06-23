@@ -40,3 +40,4 @@ import commands.thanks
 import commands.urban_dictionary
 import commands.google
 import commands.zalgo
+import commands.slogan
