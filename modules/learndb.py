@@ -68,9 +68,9 @@ def query_bot(callback, key):
   try:
     value = lookup(key)
   except KeyError:
-    return commands.CONTINUE
+    return events.CONTINUE
   except LookupException, e:
-    return commands.CONTINUE
+    return events.CONTINUE
 
   return value
 

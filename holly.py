@@ -10,6 +10,7 @@ import traceback
 import sys
 import gevent
 import config
+import modules
 from gevent import socket, monkey
 
 monkey.patch_socket()
