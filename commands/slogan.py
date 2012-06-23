@@ -9,7 +9,7 @@ class NotDefinedException(Exception):
 
 @commands.register("!slogan")
 def slogan(callback, term):
-  url = "http://thesurrealist.co.uk/slogan.cgi?word=%s" % urllib.quote(term)
+  url = "http://thesurrealist.co.uk/slogan.cgi?word=%s" % urllib.quote(term.encode("utf8"))
 
   f = urllib.urlopen(url)
   try:

@@ -9,7 +9,7 @@ class NotDefinedException(Exception):
 
 @commands.register("!ud")
 def urban_dictionary(callback, term):
-  url = "http://www.urbandictionary.com/define.php?term=%s" % urllib.quote(term)
+  url = "http://www.urbandictionary.com/define.php?term=%s" % urllib.quote(term.encode("utf8"))
 
   f = urllib.urlopen(url)
   try:

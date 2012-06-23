@@ -13,7 +13,7 @@ class NoResultsException(Exception):
 
 @commands.register(["!g", "!google"])
 def google(callback, query):
-  url = "http://www.google.com/search?q=%s&ie=UTF-8" % urllib.quote(query)
+  url = "http://www.google.com/search?q=%s&ie=UTF-8" % urllib.quote(query.encode("utf8"))
 
   f = AppURLopener().open(url)
   try:
