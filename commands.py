@@ -79,10 +79,8 @@ def register(*args, **kwargs):
       fn = all()
     elif isinstance(first, RE_TYPE):
       fn = re_
-    elif isinstance(first, basestring) or isinstance(first, list):
-      fn = command
     else:
-      raise Exception("Unknown type for param: %r" % type(first))
+      fn = command
 
   return fn(*args, **kwargs)
 

@@ -1,7 +1,9 @@
 import commands
-import util
 import db
 import events
+import http
+import re
+import cgi
 
 DB = db.LowercaseDB("learndb")
 
@@ -123,3 +125,12 @@ def on_join(type, irc, obj):
     return
 
   irc.chanmsg(obj["channel"], "[%s] %s" % (nick, value))
+
+@http.register(re.compile("^/learndb$"))
+def http_handler(env, m):
+  t = ["<table><tbody>"]
+  for key, value in DB.iteritems():
+    t.append("<tr><td><b>%s</b></td><td>%s</td></tr>" % (cgi.escape(key), cgi.escape(value)))
+
+  t.append("</tbody></table>")
+  return "text/html", "\n".join(t)
