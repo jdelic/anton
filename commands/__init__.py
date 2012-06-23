@@ -111,8 +111,7 @@ def privmsg_handler(type, irc, obj):
         break
   except Exception, e:
     traceback.print_exc()
-    callback("exception occured:")
-    callback(traceback.format_exc())
+    callback("exception occured:\n" + traceback.format_exc())
 
 import commands.learndb
 import commands.thanks
