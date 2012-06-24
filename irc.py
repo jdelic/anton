@@ -4,6 +4,7 @@ import json
 import events
 import gevent
 import config
+import traceback
 
 from log import *
 
@@ -75,7 +76,7 @@ def client():
 
       for line in lines:
         try:
-          j = json.loads(line, encoding="iso-8859-1")
+          j = json.loads(line, encoding="iso-8859-1", strict=False)
         except ValueError:
           LOG("line: " + repr(line))
           traceback.print_exc()
