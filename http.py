@@ -67,6 +67,6 @@ def server():
     start_response("404 File Not Found", [("Content-Type", "text/plain")])
     return "404 File Not Found"
 
-  s = WSGIServer(("127.0.0.1", 8088), application)
+  s = WSGIServer(config.HTTP_LISTEN, application)
   s.serve_forever()
 
