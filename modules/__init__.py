@@ -4,4 +4,4 @@ import urban_dictionary
 import google
 import zalgo
 import slogan
-import title_finder
+import title_fetcher
