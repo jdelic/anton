@@ -9,7 +9,12 @@ import HTMLParser
 def fetch_title(callback, m):
     url = m.group()
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except Exception as e: #Yeah yeah...
+        print e
+        return
+
     if r.status_code != requests.codes.ok:
         return
 
