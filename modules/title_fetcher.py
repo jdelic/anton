@@ -3,6 +3,7 @@ from BeautifulSoup import BeautifulSoup as soup
 import requests
 import commands
 import re
+import HTMLParser
 
 @commands.register(re.compile(r'http://[^ $]*'))
 def fetch_title(callback, m):
@@ -12,7 +13,11 @@ def fetch_title(callback, m):
     if r.status_code != requests.codes.ok:
         return
 
-    page = soup(r.text)
+    try:
+        page = soup(r.text)
+    except HTMLParser.HTMLParseError:
+        return "Could not parse %s with BeautifulSoup. Shun the author." % url
+
     results = page.find("title")
     if results is not None:
         return "%s: %s" % (url, util.strip_html(results).decode("utf-8"))
