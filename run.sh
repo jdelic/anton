@@ -1,6 +1,6 @@
 #!/bin/sh
 
-Pfrom .. ATH=/usr/local/bin:/usr/bin:/bin:/usr/games
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/games
 PID=$(pgrep -f "python .*holly.py")
 if [ "x$PID" != "x" ]; then
   echo already running
