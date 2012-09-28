@@ -5,7 +5,7 @@ import commands
 import re
 import HTMLParser
 
-@commands.register(re.compile(r'http://[^ $]*'))
+@commands.register(re.compile(r'https?://[^ $]*'))
 def fetch_title(callback, m):
     url = m.group()
 
