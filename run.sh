@@ -18,9 +18,10 @@ if [ "$1" != "run" ]; then
 else
   cd /home/holly/holly
   ulimit -c 999999999
+  . /home/holly/holly_virtualenv/bin/activate
   while true
   do
-    ./holly.py 2>&1 | tee -a holly.log
+    python holly.py 2>&1 | tee -a holly.log
     echo holly crashed, restarting in 5 seconds >> holly.log
     echo holly crashed, restarting in 5 seconds
     sleep 5
