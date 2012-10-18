@@ -6,4 +6,4 @@ HTTP_LISTEN = "0.0.0.0", 8081
 BOT_USERNAME = "wibble"
 BOT_REALNAME = "wibble"
 BOT_NICKNAME = "wibble"
-
+BOT_CHANNELS = ("#twilightzone",)

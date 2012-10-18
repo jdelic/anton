@@ -81,7 +81,8 @@ def process_line(irc, type, obj):
   elif type == "JOIN":
     events.fire("join", irc, {"source": to_source(obj["prefix"]), "channel": obj["args"][0]})
   elif type == "001":
-    irc.write("JOIN #twilightzone2")
+    for channel in config.BOT_CHANNELS:
+      irc.write("JOIN %s" % channel)
   else:
     LOG("bad command type: %r: %r" % (type, obj))
 
