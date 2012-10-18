@@ -86,9 +86,10 @@ def process_line(irc, type, obj):
   else:
     LOG("bad command type: %r: %r" % (type, obj))
 
-def client():
-  irc = IRC()
+def irc_instance():
+    return IRC()
 
+def client(irc):
   while True:
     LOG("connecting...")
     s = connect(config.BACKEND)

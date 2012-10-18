@@ -12,7 +12,7 @@ def register_raw(fn):
 
 def register(r):
   def decorate(fn):
-    def new_fn(callback, env):
+    def new_fn(context, env):
       path = env["PATH_INFO"]
       if path.startswith(config.HTTP_ROOT):
         path = path[len(config.HTTP_ROOT):]
@@ -21,7 +21,7 @@ def register(r):
       if not m:
         return events.CONTINUE
 
-      result = fn(env, m)
+      result = fn(env, m, context['irc'])
       if result is None:
         return events.CONTINUE
 
@@ -30,6 +30,7 @@ def register(r):
       except TypeError:
         content_type, value = "text/plain", result
 
+      callback = context['callback']
       callback(value, headers=[("Content-Type", content_type)])
       return events.STOP
 
@@ -48,7 +49,7 @@ def http_handler(type, callback, env):
     traceback.print_exc()
     callback("exception occured:\n" + traceback.format_exc())
 
-def server():
+def server(irc):
   # does this run in a greenlet?
   def application(env, start_response):
     response = [None]
@@ -59,7 +60,7 @@ def server():
         raise Exception("Already called.")
       start_response(response_line, headers)
 
-    events.fire("http", callback, env)
+    events.fire("http", {'callback': callback, 'irc': irc}, env)
 
     if response[0] is not None:
       return response[0]
