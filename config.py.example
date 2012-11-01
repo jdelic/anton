@@ -8,3 +8,4 @@ BOT_REALNAME = "wibble"
 BOT_NICKNAME = "wibble"
 BOT_CHANNELS = ("#twilightzone",)
 JENKINS_CHANNEL = "#jenkins"
+GITHUB_CHANNEL = BOT_CHANNELS[0]
