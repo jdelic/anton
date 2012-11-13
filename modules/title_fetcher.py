@@ -19,6 +19,8 @@ def fetch_title(callback, m):
         return
 
     try:
+        if r.text[:1] != '<': # BeautifulSoup's objection to being passed something like a JPG as a unicode string seems to be to raise a UnicodeEncodeError. I could catch that, but it feels nasty. Mind you, so does this... (test-case: "http://jacovanstaden.files.wordpress.com/2011/03/git-flow-overview.jpg")
+            return
         page = soup(r.text)
     except HTMLParser.HTMLParseError:
         return "Could not parse %s with BeautifulSoup. Shun the author." % url
