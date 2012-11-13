@@ -6,7 +6,7 @@ import gevent
 
 import modules
 
-import irc
+from config import irc as irc
 import http
 
 from log import *
