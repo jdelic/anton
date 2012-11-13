@@ -127,7 +127,7 @@ def on_join(type, irc, obj):
   irc.chanmsg(obj["channel"], "[%s] %s" % (nick, value))
 
 @http.register(re.compile("^/learndb$"))
-def http_handler(env, m):
+def http_handler(env, m, irc):
   t = ["<table><tbody>"]
   for key, value in DB.iteritems():
     t.append("<tr><td><b>%s</b></td><td>%s</td></tr>" % (cgi.escape(key), cgi.escape(value)))
