@@ -3,6 +3,7 @@ import http
 import re
 import config
 import json
+import urlparse
 
 try:
     GITHUB_CHANNEL = config.GITHUB_CHANNEL
@@ -11,7 +12,15 @@ except AttributeError:
 
 @http.register(re.compile("^/github/post-receive$"))
 def http_handler(env, m, irc):
-    payload = json.loads(env['wsgi.input'].read())
+    try:
+        content_length = int(env.get('CONTENT_LENGTH', 0))
+    except ValueError:
+        content_length = 0
+
+    body = env['wsgi.input'].read(content_length)
+    data = urlparse.parse_qs(body)
+
+    payload = json.loads(data['payload'][0])
     repository = payload['repository']
 
     for commit in payload['commits']:
