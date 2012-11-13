@@ -10,3 +10,4 @@ BOT_REALNAME = "anton"
 BOT_NICKNAME = "anton"
 BOT_CHANNELS = ("#twilightzone", "#laterpay",)
 JENKINS_CHANNEL = os.getenv("JENKINS_CHANNEL")
+GITHUB_CHANNEL = JENKINS_CHANNEL
