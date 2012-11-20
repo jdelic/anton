@@ -13,6 +13,7 @@ from log import *
 from gevent import monkey
 
 monkey.patch_socket()
+monkey.patch_ssl()
 
 def main():
   irc_instance = irc.irc_instance()
