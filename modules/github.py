@@ -46,6 +46,8 @@ def ticket(callback, args):
 
     if subcommand == 'search':
         return _ticket_search(callback, owner, repo, subargs)
+    elif subcommand == 'show':
+        return _ticket_show(callback, owner, repo, subargs)
     else:
         return "Unrecognised !ticket subcommand: %s" % subcommand
 
@@ -62,6 +64,24 @@ def _ticket_search(callback, owner, repo, args):
     if not issues:
         return "No issues found on {owner}/{repo} matching '{term}'".format(owner=owner, repo=repo, term=' '.join(args))
     for issue in issues:
+        output.append(_format_issue(issue))
+
+    return '\n'.join(output)
+
+
+def _ticket_show(callback, owner, repo, args):
+    output = []
+
+    for arg in args:
+        try:
+            issue_number = int(arg)
+        except ValueError:
+            output.append("Not a valid issue number: '%s'" % arg)
+            continue
+        issue = gh.issue(owner, repo, issue_number)
+        if issue is None:
+            output.append("No issue found in {owner}/{repo} with number {issue_number}".format(owner=owner, repo=repo, issue_number=issue_number))
+            continue
         output.append(_format_issue(issue))
 
     return '\n'.join(output)
