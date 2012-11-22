@@ -13,6 +13,7 @@ try:
 except AttributeError:
     GITHUB_CHANNEL = "#twilightzone"
 
+GITHUB_AUTH_TOKEN = None
 GITHUB_DEFAULT_ORGANIZATION = None
 GITHUB_DEFAULT_REPO = None
 
