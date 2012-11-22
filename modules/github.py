@@ -36,27 +36,26 @@ def ticket(callback, args):
         return "Not enough arguments"
     subcommand = tokens[0]
     subargs = tokens[1:]
+
+    # if first args token looks like a repo - "owner/repo" then use that, else fallback to GITHUB_DEFAULT_ORGANIZATION/GITHUB_DEFAULT_REPO
+    if '/' in subargs[0]:
+        owner,repo = subargs[0].split('/')
+        subargs = subargs[1:]
+    else:
+        owner,repo = GITHUB_DEFAULT_ORGANIZATION, GITHUB_DEFAULT_REPO
+
     if subcommand == 'search':
-        return _ticket_search(callback, subargs)
+        return _ticket_search(callback, owner, repo, subargs)
     else:
         return "Unrecognised !ticket subcommand: %s" % subcommand
 
 def _format_issue(issue):
     return "#{number} {title} ({state}) - {url}".format(number=issue.number, title=issue.title, state=issue.state, url=issue.html_url)
 
-def _ticket_search(callback, args):
+def _ticket_search(callback, owner, repo, args):
     """
-    Search for issues; if first args token looks like a repo - "owner/repo" then use that, else fallback to GITHUB_DEFAULT_ORGANIZATION/GITHUB_DEFAULT_REPO
-
-    Note just search open issues for now...
+    Search for issues; note just open issues for now...
     """
-    if '/' in args[0]:
-        owner,repo = args[0].split('/')
-        args = args[1:]
-    else:
-        owner,repo = GITHUB_DEFAULT_ORGANIZATION, GITHUB_DEFAULT_REPO
-        if owner is None:
-            return "No default owner/repo provided; specify in your ticket search or set config.GITHUB_DEFAULT_ORGANIZATION and config.GITHUB_DEFAULT_REPO"
 
     output = []
     issues = gh.search_issues(owner, repo, 'open', ' '.join(args))
