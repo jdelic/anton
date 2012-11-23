@@ -51,6 +51,8 @@ def ticket(callback, args):
         return _ticket_search(callback, owner, repo, subargs)
     elif subcommand == 'show':
         return _ticket_show(callback, owner, repo, subargs)
+    elif subcommand == 'create':
+        return _ticket_create(callback, owner, repo, subargs)
     else:
         return "Unrecognised !ticket subcommand: %s" % subcommand
 
@@ -89,6 +91,22 @@ def _ticket_show(callback, owner, repo, args):
 
     return '\n'.join(output)
 
+
+def _ticket_create(callback, owner, repo, args):
+    assignee = None
+
+    if args[0][0] == '@': # We have an assignee!
+        username = args[0][1:]
+        r = gh.repository(owner, repo) #Ok, maybe "repo" was a poor parameter name
+        if not r.is_assignee(username): # TODO Consider patch to library for better name?
+            return "@{username} isn't a valid assignee for issues on {owner}/{repo}".format(username=username, owner=owner, repo=repo)
+        assignee = username
+        args = args[1:]
+
+    issue_title = ' '.join(args)
+    issue = gh.create_issue(owner, repo, issue_title, assignee=assignee)
+
+    return "Created %s" % _format_issue(issue)
 
 @http.register(re.compile("^/github/post-receive$"))
 def http_handler(env, m, irc):
