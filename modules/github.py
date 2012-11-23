@@ -44,6 +44,9 @@ def ticket(callback, args):
     else:
         owner,repo = GITHUB_DEFAULT_ORGANIZATION, GITHUB_DEFAULT_REPO
 
+    if gh.repository(owner, repo) is None:
+        return "Could not find repository {owner}/{repo}".format(owner=owner, repo=repo)
+
     if subcommand == 'search':
         return _ticket_search(callback, owner, repo, subargs)
     elif subcommand == 'show':
