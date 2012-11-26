@@ -1,6 +1,0 @@
-syntax: glob
-*.pyc
-data
-holly.log
-.lock
-config.py
