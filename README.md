@@ -2,7 +2,7 @@
 
 ## (Or, "How I turned Holly into Anton")
 
-Anton currently runs on a Heroku instance provided by Moorhen Solutions Ltd. (Kristian's company). This forces things to be a little more [12factor-y](http://www.12factor.net/) than Holly was originally written to be.
+Anton currently runs on a [Heroku](http://www.heroku.com/) instance provided by Moorhen Solutions Ltd. (Kristian's company). This forces things to be a little more [12factor-y](http://www.12factor.net/) than Holly was originally written to be.
 
 There is a fork of Holly at `laterpay/anton` on GitHub. This is forked from https://bitbucket.org/chrisporter/holly/. This exists for two reasons only:
 
@@ -23,7 +23,7 @@ If you are deploying the bot, you should adopt the following (non-standard, bad 
 
 ## What does the `laterpay-heroku` branch contain?
 
-1. A Procfile is included, for running on Heroku
+1. A [Procfile](https://devcenter.heroku.com/articles/procfile) is included, for running on Heroku
 2. Holly is designed so that you grab the code, and create your own `config.py`; Anton uses a `config.py` that gets its data from environment variables, in a 12factor / Heroku-compatible way.
 3. Heroku dynos have an ephemeral filesystem; Holly's `learndb` module is currently implemented using a local `sqlite3` db; this will not work on Heroku so is disabled.
 
