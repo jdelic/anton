@@ -11,13 +11,12 @@ There is a fork of Holly at `laterpay/anton` on GitHub. This is forked from http
 
 If you are working on the bot, for anything nonspecific, you should use https://bitbucket.org/chrisporter/holly/ as your source. 
 
-If you are deploying the bot, you should adopt the following (non-standard, bad form for anywhere else) procedure:
+If you are deploying the bot, you should adopt the following (slightly non-standard) procedure:
 
 1. Ensure the `laterpay/anton` repo is up to date with changes in the upstream Holly repo
-2. Checkout the `laterpay-heroku` branch
-3. Rebase `laterpay-heroku` onto the Holly/Anton branch you wish to use (NEVER do this outside of these circumstances)
-4. Force-push `laterpay-heroku` to `origin` (NEVER do this)
-5. Force-push `laterpay-heroku` to `heroku/master` (NEVER do this)
+2. Checkout the `laterpay-heroku` branch (`git checkout laterpay-heroku`)
+3. Merge any changes from `master` into `laterpay-heroku` (`git merge master`)
+5. Push `laterpay-heroku` to `heroku/master` (`git push heroku laterpay-heroku:master`)
 
 `laterpay-heroku` should be a **small** branch only for running-on-Heroku config. If you want to add LaterPay-specific features, do it on another branch.
 
