@@ -1,6 +1,7 @@
 import irc_client as irc
 import os
 
+WORKING_DIR = "."
 BACKEND = os.getenv("IRC_SERVER_HOST"), int(os.getenv("IRC_SERVER_PORT"))
 HTTP_ROOT = "/bot"
 HTTP_LISTEN = "0.0.0.0", int(os.getenv("PORT"))
