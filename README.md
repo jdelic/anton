@@ -1,33 +1,26 @@
-# LaterPay-specific modifications for Holly
+# Anton
 
-## (Or, "How I turned Holly into Anton")
+Anton is an instance of [Holly](https://bitbucket.org/chrisporter/holly/).
 
-Anton currently runs on a [Heroku](http://www.heroku.com/) instance provided by Moorhen Solutions Ltd. (Kristian's company). This forces things to be a little more [12factor-y](http://www.12factor.net/) than Holly was originally written to be.
+Anton currently runs on `perigee`, @carlio's server that also hosts the ircd.
 
 There is a fork of Holly at `laterpay/anton` on GitHub. This is forked from https://bitbucket.org/chrisporter/holly/. This exists for two reasons only:
 
 1. So there is a "LaterPay backup"
-2. For the `laterpay-heroku` branch
+2. For this README.
 
-If you are working on the bot, for anything nonspecific, you should use https://bitbucket.org/chrisporter/holly/ as your source. 
+If you are working on the bot, for anything nonspecific, you should use https://bitbucket.org/chrisporter/holly/ as your source. If you are adding anything LaterPay-specific to the bot, see if you can make it generic.
 
-If you are deploying the bot, you should adopt the following (slightly non-standard) procedure:
+## Upgrading / configuring / tweaking Anton
 
-1. Ensure the `laterpay/anton` repo is up to date with changes in the upstream Holly repo
-2. Checkout the `laterpay-heroku` branch (`git checkout laterpay-heroku`)
-3. Merge any changes from `master` into `laterpay-heroku` (`git merge master`)
-5. Push `laterpay-heroku` to `heroku/master` (`git push heroku laterpay-heroku:master`)
+Anton lives in a git repo on `perigee.carlcrowder.com` in `/srv/anton`. (Anton should probably be moved to a LaterPay server...)
 
-`laterpay-heroku` should be a **small** branch only for running-on-Heroku config. If you want to add LaterPay-specific features, do it on another branch.
+He runs via `supervisor` (see `/etc/supervisor/conf.d/anton.conf`) and has an `httpd` that `nginx` proxies to (see `/etc/nginx/sites-available/anton`).
 
-## What does the `laterpay-heroku` branch contain?
+## What did the `laterpay-heroku` branch contain?
 
-1. A [Procfile](https://devcenter.heroku.com/articles/procfile) is included, for running on Heroku
-2. Holly is designed so that you grab the code, and create your own `config.py`; Anton uses a `config.py` that gets its data from environment variables, in a 12factor / Heroku-compatible way.
-3. Heroku dynos have an ephemeral filesystem; Holly's `learndb` module is currently implemented using a local `sqlite3` db; this will not work on Heroku so is disabled.
+Before Anton ran on `perigee`, it ran on Heroku, which required a few modifications that never made it upstream; these lived in `laterpay-heroku`. Now the branch exists solely for this README.
 
 ## Future notes
-
-`learndb` is cool. Someone should probably refactor Holly to be more flexible in her backing db, or move Anton off Heroku and onto a LaterPay box.
 
 Kristian (holly@doismellburning.co.uk) is maintaining Holly for the long term; contact him if you have any Holly issues/questions/opinions.
