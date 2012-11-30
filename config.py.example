@@ -1,4 +1,6 @@
 import irc_client as irc
+
+WORKING_DIR = "."
 BACKEND = "10.13.37.143", 5050
 HTTP_ROOT = "/bot"
 HTTP_LISTEN = "0.0.0.0", 8081

@@ -3,10 +3,12 @@
 import fcntl
 import sys
 import gevent
+import os
 
 import modules
 
 from config import irc as irc
+import config
 import http
 
 from log import *
@@ -26,7 +28,7 @@ def main():
 #    gevent.core.loop()
 
 if __name__ == "__main__":
-  with open(".lock", "w") as f:
+  with open(os.path.join(config.WORKING_DIR, ".lock"), "w") as f:
     try:
       fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
