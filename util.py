@@ -1,4 +1,5 @@
 import os
+import config
 import codecs
 import HTMLParser
 import re
@@ -45,7 +46,7 @@ def split_line(data, split_at=400, force_split_at=350, separator="..."):
   return result
 
 def data_path():
-  return "./data/"  
+  return os.path.join(config.WORKING_DIR, "data/")
 
 def data_file(value):
   return os.path.join(data_path(), value)
