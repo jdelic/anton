@@ -65,7 +65,14 @@ def _ticket_search(callback, owner, repo, args):
     """
 
     output = []
-    issues = gh.search_issues(owner, repo, 'open', ' '.join(args))
+    def s(issue_type=None):
+        if issue_type is None:
+            open_issues = s('open')
+            closed_issues = s('closed')
+            return sorted(open_issues + closed_issues, key=lambda issue: issue.number)
+        return gh.search_issues(owner, repo, issue_type, ' '.join(args))
+
+    issues = s()
     if not issues:
         return "No issues found on {owner}/{repo} matching '{term}'".format(owner=owner, repo=repo, term=' '.join(args))
     for issue in issues:
