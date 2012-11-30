@@ -5,7 +5,6 @@ import config
 import json
 import urlparse
 import github3
-import shlex
 import logging
 
 try:
@@ -31,7 +30,7 @@ def ticket(callback, args):
     if GITHUB_AUTH_TOKEN is None:
         return "No value for config.GITHUB_AUTH_TOKEN, no !ticket for you :("
 
-    tokens = shlex.split(args)
+    tokens = args.split()
     if len(tokens) < 2:
         return "Not enough arguments"
     subcommand = tokens[0]
