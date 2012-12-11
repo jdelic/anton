@@ -24,7 +24,7 @@ Here is an example config:
     autorestart=true
     environment=IRC_SERVER_HOST="YOUR.IRCSER.VER",
         IRC_SERVER_PORT="6667",
-        PORT="80",
+        PORT="8080",
         JENKINS_CHANNEL="#laterpay-ci",
         GITHUB_AUTH_TOKEN="[create an auth token]"
 
