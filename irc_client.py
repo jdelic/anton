@@ -122,5 +122,5 @@ def client(irc):
 
     irc.socket = None
     LOG("disconnected, retrying in 5s...")
-    time.sleep(5)
+    gevent.sleep(5)
 
