@@ -19,13 +19,12 @@ monkey.patch_ssl()
 
 def main():
   irc_instance = irc.irc_instance()
-  gevent.spawn(http.server, irc_instance)
-#  gevent.spawn(irc.client)
-
+  http_instance = http.server(irc_instance)
   irc.client(irc_instance) # HACK
 
-#  while True:
-#    gevent.core.loop()
+  # Abuse WSGIServer's serve_forever implementation as a daemonization
+  # kit that handles signals
+  http_instance.serve_forever()
 
 if __name__ == "__main__":
   with open(os.path.join(config.WORKING_DIR, ".lock"), "w") as f:

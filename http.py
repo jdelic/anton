@@ -69,5 +69,5 @@ def server(irc):
     return "404 File Not Found"
 
   s = WSGIServer(config.HTTP_LISTEN, application)
-  s.serve_forever()
+  return s
 
