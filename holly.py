@@ -20,10 +20,11 @@ monkey.patch_ssl()
 def main():
   irc_instance = irc.irc_instance()
   http_instance = http.server(irc_instance)
-  irc.client(irc_instance) # HACK
+  gevent.spawn(irc.client, irc_instance)
 
-  # Abuse WSGIServer's serve_forever implementation as a daemonization
-  # kit that handles signals
+  # Abuse WSGIServer's serve_forever() implementation as a "daemonization
+  # kit" that handles signals correctly. 
+  LOG("holly listening at %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
   http_instance.serve_forever()
 
 if __name__ == "__main__":
