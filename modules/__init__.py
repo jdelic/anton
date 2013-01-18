@@ -7,3 +7,5 @@ import slogan
 import title_fetcher
 import jenkins
 import github
+import huzzah
+
