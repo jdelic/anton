@@ -13,7 +13,7 @@ If you are working on the bot, for anything nonspecific, you should use https://
 
 ## Upgrading / configuring / tweaking Anton
 
-In production, Anton runs via supervisor (or any other watcher process). On it's VM (anton.laterpay.net), it lives in /srv/anton. Anton is mostly configured through environment variables set in its supervisord config.
+In production, Anton runs via supervisor (or any other watcher process). On it's VM (anton.laterpay.net), it lives in /srv/anton. Anton is mostly configured through environment variables set in its supervisord/daemontools config.
 
 Here is an example config:
 
@@ -28,7 +28,7 @@ Here is an example config:
         JENKINS_CHANNEL="#laterpay-ci",
         GITHUB_AUTH_TOKEN="[create an auth token]"
 
-On anton.laterpay.net, this config lives in /etc/supervisor/conf.d, but as you can see, Anton has its own virtualenv in `.env`, so it could also run its own copy of supervisor.
+On LaterPay's `irc.laterpay.net`, anton is run via `/service/anton` and its config lives in `envdir/`.
 
 ## How do I create a GitHub auth token?
 
