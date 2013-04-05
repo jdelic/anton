@@ -140,3 +140,11 @@ def http_handler(env, m, irc):
         )
         irc.chanmsg(GITHUB_CHANNEL, output)
     return "application/json", json.dumps(payload)
+
+if __name__ == '__main__':
+    print("Generating a GitHub auth token")
+    username = raw_input("Username: ")
+    password = raw_input("Password: ")
+    note_url = "https://bitbucket.org/chrisporter/holly/"
+    authorization = github3.GitHub().authorize(username, password, ['repo'], note_url=note_url)
+    print authorization.to_json()
