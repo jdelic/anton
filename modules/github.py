@@ -5,7 +5,6 @@ import config
 import json
 import urlparse
 import github3
-import shlex
 import logging
 
 try:
@@ -31,7 +30,7 @@ def ticket(callback, args):
     if GITHUB_AUTH_TOKEN is None:
         return "No value for config.GITHUB_AUTH_TOKEN, no !ticket for you :("
 
-    tokens = shlex.split(args)
+    tokens = args.split()
     if len(tokens) < 2:
         return "Not enough arguments"
     subcommand = tokens[0]
@@ -65,7 +64,14 @@ def _ticket_search(callback, owner, repo, args):
     """
 
     output = []
-    issues = gh.search_issues(owner, repo, 'open', ' '.join(args))
+    def s(issue_type=None):
+        if issue_type is None:
+            open_issues = s('open')
+            closed_issues = s('closed')
+            return sorted(open_issues + closed_issues, key=lambda issue: issue.number)
+        return gh.search_issues(owner, repo, issue_type, ' '.join(args))
+
+    issues = s()
     if not issues:
         return "No issues found on {owner}/{repo} matching '{term}'".format(owner=owner, repo=repo, term=' '.join(args))
     for issue in issues:
@@ -134,3 +140,11 @@ def http_handler(env, m, irc):
         )
         irc.chanmsg(GITHUB_CHANNEL, output)
     return "application/json", json.dumps(payload)
+
+if __name__ == '__main__':
+    print("Generating a GitHub auth token")
+    username = raw_input("Username: ")
+    password = raw_input("Password: ")
+    note_url = "https://bitbucket.org/chrisporter/holly/"
+    authorization = github3.GitHub().authorize(username, password, ['repo'], note_url=note_url)
+    print authorization.to_json()
