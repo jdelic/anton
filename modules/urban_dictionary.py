@@ -23,7 +23,7 @@ def urban_dictionary(callback, term):
        headers = BROWSER_HEADERS
     )
     parsed = lxml.html.fromstring(req.content)
-    results = list(x.text_content() for x in parsed.cssselect('.definition'))
+    results = list(x.text_content() for x in parsed.cssselect('.definition'))[:3]
     return [
       "%s: %s" % (i, definition) 
       for i, definition in enumerate(results)
