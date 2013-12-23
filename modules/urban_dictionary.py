@@ -2,8 +2,8 @@
 
 import commands
 import requests
-import lxml.html
- 
+from bs4 import BeautifulSoup
+
 BROWSER_HEADERS = dict([
     ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
     ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
@@ -16,15 +16,16 @@ BROWSER_HEADERS = dict([
     ))
 ])
 
+
 @commands.register("!ud")
 def urban_dictionary(callback, term):
     req = requests.get(
-       'http://www.urbandictionary.com/define.php?term=%s' % term, 
-       headers = BROWSER_HEADERS
+        'http://www.urbandictionary.com/define.php?term=%s' % term,
+        headers=BROWSER_HEADERS
     )
-    parsed = lxml.html.fromstring(req.content)
-    results = list(x.text_content() for x in parsed.cssselect('.definition'))[:3]
+    soup = BeautifulSoup(req.text)
+    results = list(x.text for x in soup.select('.definition')[:3])
     return [
-      "%s: %s" % (i+1, definition) 
-      for i, definition in enumerate(results)
+        "%s: %s" % (i + 1, definition)
+        for i, definition in enumerate(results)
     ]
