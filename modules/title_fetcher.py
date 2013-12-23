@@ -39,9 +39,12 @@ def fetch_title(callback, m):
         # should be rare.
         return
 
-    results = page.find("title")
-    if results is not None:
-        return util.strip_html(results).decode("utf-8")
+    result = page.find("title")
+    if result is not None:
+        title = util.strip_html(result).decode("utf-8")
+        if len(title) > 200:
+            title = "%s..." % title[:197]
+        return title
 
 if __name__ == '__main__':
     print fetch_title(None, re.match(r'http://[^ $]*', "foo http://google.com/ bar"))
