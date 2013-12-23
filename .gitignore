@@ -2,3 +2,6 @@
 data
 holly.log
 .lock
+.idea
+*.iml
+
