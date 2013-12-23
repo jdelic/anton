@@ -4,28 +4,32 @@ import util
 
 from BeautifulSoup import BeautifulSoup as soup
 
+
 class NotDefinedException(Exception):
-  pass
+    pass
+
 
 @commands.register("!slogan")
 def slogan(callback, term):
-  url = "http://thesurrealist.co.uk/slogan.cgi?word=%s" % urllib.quote(term.encode("utf8"))
+    url = "http://thesurrealist.co.uk/slogan.cgi?word=%s" % urllib.quote(term.encode("utf8"))
 
-  f = urllib.urlopen(url)
-  try:
-    data = f.read()
-  finally:
-    f.close()
+    f = urllib.urlopen(url)
+    try:
+        data = f.read()
+    finally:
+        f.close()
 
-  v = parse_html(data)
-  if v is not None:
-    return v
+    v = parse_html(data)
+    if v is not None:
+        return v
+
 
 def parse_html(data):
-  page = soup(data)
+    page = soup(data)
 
-  t = page.find("a", {"class": "h1a"})
-  return util.strip_html(t)
+    t = page.find("a", {"class": "h1a"})
+    return util.strip_html(t)
+
 
 if __name__ == "__main__":
-  print slogan(None, "!slogan wibble")
+    print slogan(None, "!slogan wibble")

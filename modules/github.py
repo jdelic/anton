@@ -25,6 +25,7 @@ try:
 except AttributeError:
     pass
 
+
 @commands.register("!ticket")
 def ticket(callback, args):
     if GITHUB_AUTH_TOKEN is None:
@@ -55,8 +56,10 @@ def ticket(callback, args):
     else:
         return "Unrecognised !ticket subcommand: %s" % subcommand
 
+
 def _format_issue(issue):
     return "#{number} {title} ({state}) - {url}".format(number=issue.number, title=issue.title, state=issue.state, url=issue.html_url)
+
 
 def _ticket_search(callback, owner, repo, args):
     """
@@ -101,9 +104,9 @@ def _ticket_show(callback, owner, repo, args):
 def _ticket_create(callback, owner, repo, args):
     assignee = None
 
-    if args[0][0] == '@': # We have an assignee!
+    if args[0][0] == '@':  # We have an assignee!
         username = args[0][1:]
-        r = gh.repository(owner, repo) #Ok, maybe "repo" was a poor parameter name
+        r = gh.repository(owner, repo)  # Ok, maybe "repo" was a poor parameter name
         if not r.is_assignee(username): # TODO Consider patch to library for better name?
             return "@{username} isn't a valid assignee for issues on {owner}/{repo}".format(username=username, owner=owner, repo=repo)
         assignee = username
@@ -141,10 +144,11 @@ def http_handler(env, m, irc):
         irc.chanmsg(GITHUB_CHANNEL, output)
     return "application/json", json.dumps(payload)
 
+
 if __name__ == '__main__':
     print("Generating a GitHub auth token")
     username = raw_input("Username: ")
     password = raw_input("Password: ")
-    note_url = "https://bitbucket.org/chrisporter/holly/"
+    note_url = "https://github.com/laterpay/anton/"
     authorization = github3.GitHub().authorize(username, password, ['repo'], note_url=note_url)
     print authorization.to_json()

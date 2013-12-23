@@ -5,21 +5,26 @@ import commands
 import re
 import HTMLParser
 
+
 @commands.register(re.compile(r'https?://[^ $]*'))
 def fetch_title(callback, m):
     url = m.group()
 
     try:
         r = requests.get(url)
-    except Exception as e: #Yeah yeah...
+    except Exception as e:  # Yeah yeah...
         print e
         return
 
     if r.status_code != requests.codes.ok:
         return
 
+    # BeautifulSoup's objection to being passed something like
+    # a JPG as a unicode string seems to be to raise a UnicodeEncodeError.
+    # I could catch that, but it feels nasty. Mind you, so does this...
+    # (test-case: "http://jacovanstaden.files.wordpress.com/2011/03/git-flow-overview.jpg")
     try:
-        if r.text[:1] != '<': # BeautifulSoup's objection to being passed something like a JPG as a unicode string seems to be to raise a UnicodeEncodeError. I could catch that, but it feels nasty. Mind you, so does this... (test-case: "http://jacovanstaden.files.wordpress.com/2011/03/git-flow-overview.jpg")
+        if r.text[:1] != '<':
             return
         page = soup(r.text)
     except HTMLParser.HTMLParseError:

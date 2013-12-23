@@ -7,7 +7,9 @@ answers = [
     '\o/',
     'yo diggity!',
     'you rock!!!',
-    'you are looking awesome today!'
+    'you are looking awesome today!',
+    'black pepper?',
+    'DOO EET! Seriously, do it.'
 ]
 
 @commands.register(re.compile(r'^(huzzah.*|\\o|o/|\\o/)'))
@@ -16,7 +18,7 @@ def huzzah(callback, args):
 
 if __name__ == '__main__':
     import sys
-    if (re.match(r'^(huzzah.*|\\o|o/|\\o/)', sys.argv[1])):
-        print _real_huzzah(None, None)
+    if re.match(r'^(huzzah.*|\\o|o/|\\o/)', sys.argv[1]):
+        print huzzah(None, None)
     else:
         print "%s did not match regex" % sys.argv[1]
