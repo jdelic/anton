@@ -1,5 +1,5 @@
 import util
-from BeautifulSoup import BeautifulSoup as soup
+from bs4 import BeautifulSoup
 import requests
 import commands
 import re
@@ -30,7 +30,7 @@ def fetch_title(callback, m):
     try:
         if r.text[:1] != '<':
             return
-        page = soup(r.text)
+        page = BeautifulSoup(r.text)
     except HTMLParser.HTMLParseError:
         return "Could not parse %s with BeautifulSoup. Shun the author." % url
     except TypeError:

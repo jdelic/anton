@@ -75,7 +75,7 @@ def decode_irc(x, redecode=True):
 
 
 def strip_html(x):
-    d = "".join(x.findAll(text=True))
+    d = "".join(x.find_all(text=True))
     d = HTMLParser.HTMLParser().unescape(d)
     d = d.replace("\r", " ").replace("\n", " ")
     d = re.sub("\s{2,}", " ", d).strip()
