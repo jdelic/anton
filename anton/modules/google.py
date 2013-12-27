@@ -1,7 +1,8 @@
 import urllib
-import util
+from anton import util
+from bs4 import BeautifulSoup
 import urlparse
-import commands
+from anton import commands
 
 
 class AppURLopener(urllib.FancyURLopener):

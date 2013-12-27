@@ -1,14 +1,11 @@
 import socket
-import util
-import json
 import events
 import gevent
-import config
 import traceback
-import time
 
-from log import *
-
+from anton.log import *
+from anton import util
+from anton import config
 
 def connect(addr):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

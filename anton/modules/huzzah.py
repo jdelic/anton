@@ -1,5 +1,5 @@
 import random
-import commands
+from anton import commands
 import re
 
 answers = [

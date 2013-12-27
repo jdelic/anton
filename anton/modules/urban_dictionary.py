@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import commands
+from anton import commands
 import requests
 from bs4 import BeautifulSoup
 

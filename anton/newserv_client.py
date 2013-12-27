@@ -1,12 +1,12 @@
 import socket
-import util
 import json
 import events
 import gevent
-import config
 import traceback
 
-from log import *
+from anton import config
+from anton import util
+from anton.log import *
 
 
 def connect(addr):

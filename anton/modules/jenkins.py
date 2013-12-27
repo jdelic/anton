@@ -11,9 +11,9 @@ regarding the JSON data POSTed; the code here (at time of writing) uses what the
 plugin version sends...
 """
 
-import http
+from anton import http
 import re
-import config
+from anton import config
 import json
 
 try:

@@ -1,7 +1,7 @@
 import commands
-import http
+from anton import http
 import re
-import config
+from anton import config
 import json
 import urlparse
 import github3

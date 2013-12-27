@@ -1,4 +1,3 @@
-import irc_client as irc
 import os
 
 WORKING_DIR = "."

@@ -1,7 +1,6 @@
 import events
 import traceback
 import re
-import events
 
 COMMANDS = []
 

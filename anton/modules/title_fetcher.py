@@ -1,7 +1,7 @@
-import util
+from anton import util
 from bs4 import BeautifulSoup
 import requests
-import commands
+from anton import commands
 import re
 import HTMLParser
 

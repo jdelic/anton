@@ -1,7 +1,7 @@
-import commands
-import db
+from anton import commands
+from anton import db
 import events
-import http
+from anton import http
 import re
 import cgi
 

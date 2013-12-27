@@ -7,6 +7,7 @@ import os
 import http
 from anton.log import *
 
+# this import is necessary to activate all plugins
 from anton import modules
 
 from anton import config

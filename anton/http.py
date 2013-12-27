@@ -1,7 +1,7 @@
 import events
 import gevent
 import traceback
-import config
+from anton import config
 
 from gevent.pywsgi import WSGIServer
 
