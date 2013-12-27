@@ -4,18 +4,17 @@ import fcntl
 import sys
 import gevent
 import os
-
-import modules
-
-from config import irc as irc
-import config
 import http
+from anton.log import *
 
-from log import *
-from gevent import monkey
+from anton import modules
 
-monkey.patch_socket()
-monkey.patch_ssl()
+from anton import config
+from anton.config import irc as irc
+
+
+gevent.monkey.patch_socket()
+gevent.monkey.patch_ssl()
 
 
 def main():
