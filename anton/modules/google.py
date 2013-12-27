@@ -1,6 +1,5 @@
 import urllib
 import util
-from BeautifulSoup import BeautifulSoup as soup
 import urlparse
 import commands
 
@@ -39,7 +38,7 @@ def google(callback, query):
 
 
 def parse_data(data):
-    page = soup(data)
+    page = BeautifulSoup(data)
 
     results = page.find("div", id="res")
     if results is None:
@@ -49,13 +48,13 @@ def parse_data(data):
     if calc is not None:
         calc = results.find("h2", {"class": "r"})
         if calc is not None:
-            superscripts = calc.findAll("sup")
+            superscripts = calc.find_all("sup")
             if superscripts is not None and len(superscripts):
                 for x in superscripts:
                     x.contents[0].replaceWith("^" + x.contents[0])
             return [dict(type="string", string=util.strip_html(calc).decode("utf-8"))]
 
-    nresults = results.findAll("li", {"class": "g"})
+    nresults = results.find_all("li", {"class": "g"})
     if len(nresults) == 0:
         raise NoResultsException
 
