@@ -1,4 +1,5 @@
 import os
+import sys
 import config
 import codecs
 import HTMLParser
@@ -10,6 +11,31 @@ def split_lines(data, **kwargs):
     for x in data:
         result.extend(split_line(x, **kwargs))
     return result
+
+
+def import_module(modulename):
+    try:
+        __import__(modulename)
+    except ImportError as e:
+        raise Exception("Can't import ticket provider %s")
+
+    return sys.modules[modulename]
+
+
+def get_class_from_string(fqcn):
+    try:
+        modulename, classname = fqcn.rsplit('.', 1)
+    except ValueError:
+        raise Exception("Can't parse ticket provider %s, it needs to be a fully qualified class name" % fqcn)
+
+    module = import_module(modulename)
+
+    try:
+        clazz = getattr(module, classname)
+    except AttributeError:
+        raise Exception("Can't load class %s from module %s. Does it exist?" % (classname, modulename))
+
+    return clazz
 
 
 def split_line(data, split_at=400, force_split_at=350, separator="..."):
