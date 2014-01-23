@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PATH=/opt/lp/daemontools/bin:$PATH
+
+exec 2>&1
+exec setuidgid anton envdir envdir .env/bin/python -u holly.py
