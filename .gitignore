@@ -4,4 +4,5 @@ holly.log
 .lock
 .idea
 *.iml
+*.egg-info
 
