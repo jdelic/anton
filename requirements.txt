@@ -4,4 +4,5 @@ github3.py==0.6.1
 greenlet==0.4.0
 requests==1.1.0
 wsgiref==0.1.2
-cssselect=0.9.1
+cssselect==0.9.1
+jira-python>=0.13
