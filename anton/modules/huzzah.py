@@ -9,8 +9,10 @@ answers = [
     'you rock!!!',
     'you are looking awesome today!',
     'black pepper?',
-    'DOO EET! Seriously, do it.'
+    'do it. Come on, do it. DO IT!',
+    'man, I love you!'
 ]
+
 
 @commands.register(re.compile(r'^(huzzah.*|\\o|o/|\\o/)'))
 def huzzah(callback, args):
