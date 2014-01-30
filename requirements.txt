@@ -1,8 +1,8 @@
 beautifulsoup4==4.3.2
 gevent==0.13.8
-github3.py==0.6.1
-greenlet==0.4.0
-requests==1.1.0
+github3.py==0.8.1
+greenlet==0.4.2
+requests==2.2.1
 wsgiref==0.1.2
 cssselect==0.9.1
 jira-python>=0.13
