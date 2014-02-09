@@ -124,7 +124,7 @@ def client(irc):
                 except ValueError, e:
                     _log.error("line: " + repr(line), e)
                     continue
-                print j
+                _log.debug(j)
 
                 gevent.spawn(process_line, irc, j["type"], j.get("data"))
 
