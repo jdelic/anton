@@ -14,7 +14,7 @@ setup(
     name='irc.anton',
     data_files=[('', ['package.yaml', ]), ],
     scripts=[
-        'scripts/anton.py',
+        'scripts/bot.py',
         'scripts/run'
     ],
     version=_version,
