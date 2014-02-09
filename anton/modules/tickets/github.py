@@ -32,7 +32,8 @@ class GitHubTicketProvider(TicketProvider):
         if GITHUB_AUTH_TOKEN is None:
             raise TicketProviderErrorResponse("No value for config.GITHUB_AUTH_TOKEN, no !ticket for you :(")
 
-    def _format_issue(self, issue):
+    def _format_searchresult(self, result):
+        issue = result.issue
         return "#{number} {title} ({state}) - {url}".format(number=issue.number, title=issue.title, state=issue.state,
                                                             url=issue.html_url)
 
@@ -61,14 +62,16 @@ class GitHubTicketProvider(TicketProvider):
             if issue_type is None:
                 open_issues = s('open')
                 closed_issues = s('closed')
-                return sorted(open_issues + closed_issues, key=lambda issue: issue.number)
-            return gh.search_issues(owner, repo, issue_type, ' '.join(args))
+                return sorted([x for x in open_issues] + [y for y in closed_issues], key=lambda result: result.score,
+                              reverse=True)
+            query = "repo:%s/%s state:%s %s" % (owner, repo, issue_type, ' '.join(args))
+            return gh.search_issues(query)
 
         issues = s()
         if not issues:
-            return "No issues found on {owner}/{repo} matching '{term}'".format(owner=owner, repo=repo, term=' '.join(args))
+            output.append("No issues found on {owner}/{repo} matching '{term}'".format(owner=owner, repo=repo, term=' '.join(args)))
         for issue in issues:
-            output.append(self._format_issue(issue))
+            output.append(self._format_searchresult(issue))
 
         return '\n'.join(output)
 
@@ -97,7 +100,7 @@ class GitHubTicketProvider(TicketProvider):
         if args[0][0] == '@':  # We have an assignee!
             username = args[0][1:]
             r = gh.repository(owner, repo)  # Ok, maybe "repo" was a poor parameter name
-            if not r.is_assignee(username): # TODO Consider patch to library for better name?
+            if not r.is_assignee(username):  # TODO Consider patch to library for better name?
                 return "@{username} isn't a valid assignee for issues on {owner}/{repo}".format(username=username, owner=owner, repo=repo)
             assignee = username
             args = args[1:]
