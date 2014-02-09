@@ -1,0 +1,13 @@
+app_name: anton
+rpm_name: laterpay-anton
+pip_application: irc.anton
+collect_static: False
+run_under_daemontools: True
+rpm_build_deps:
+    - python2.7-laterpay
+    - python2.7-laterpay-devel
+    - python2.7-virtualenv-laterpay
+    - python2.7-setuptools-laterpay
+    - python2.7-pip-laterpay
+rpm_run_deps:
+    - python2.7-laterpay
