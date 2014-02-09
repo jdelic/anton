@@ -12,7 +12,7 @@ _log = logging.getLogger(__name__)
 
 class JiraTicketProvider(TicketProvider):
     def __init__(self):
-        for k in ['JIRA_AUTH_TOKEN', 'JIRA_AUTH_SECRET', 'JIRA_AUTH_PUBKEY', 'JIRA_AUTH_ID', 'JIRA_URL']:
+        for k in ['JIRA_AUTH_TOKEN', 'JIRA_AUTH_SECRET', 'JIRA_AUTH_PRIVATEKEY', 'JIRA_AUTH_ID', 'JIRA_URL']:
             if not hasattr(config, k):
                 raise TicketProviderErrorResponse("No value for config.%s, no !ticket for you :(" % k)
         options = {
@@ -22,7 +22,7 @@ class JiraTicketProvider(TicketProvider):
             'access_token': config.JIRA_AUTH_TOKEN,
             'access_token_secret': config.JIRA_AUTH_SECRET,
             'consumer_key': config.JIRA_AUTH_ID,
-            'key_cert': config.JIRA_AUTH_PUBKEY
+            'key_cert': config.JIRA_AUTH_PRIVATEKEY
         }
         self.url = "%s/" % config.JIRA_URL if not config.JIRA_URL.endswith('/') else config.JIRA_URL
         self.jira = JIRA(options=options, oauth=oauth)
