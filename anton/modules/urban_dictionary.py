@@ -24,8 +24,16 @@ def urban_dictionary(callback, term):
         headers=BROWSER_HEADERS
     )
     soup = BeautifulSoup(req.text)
-    results = list(x.text for x in soup.select('.definition')[:3])
-    return [
-        "%s: %s" % (i + 1, definition)
-        for i, definition in enumerate(results)
-    ]
+    resultlist = soup.select('.meaning')
+    if len(resultlist) == 0:
+        return "Sorry, no results"
+
+    results = [x for x in resultlist[:3]]
+
+    output = []
+    for i, definition in enumerate(results):
+        output.append('%s: %s' % (i + 1, definition.text.strip()))
+        if definition.next_sibling.next_sibling.get('class', ['nomatch'])[0] == u'example':
+            output.append('-- Example: %s' % definition.next_sibling.next_sibling.text.strip())
+
+    return '\n'.join(output)
