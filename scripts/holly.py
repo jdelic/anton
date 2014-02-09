@@ -5,6 +5,7 @@ import sys
 import gevent
 import gevent.monkey
 import os
+import logging
 from anton import http
 from anton.log import *
 
@@ -20,6 +21,7 @@ gevent.monkey.patch_ssl()
 
 
 def main():
+    logging.config.dictConfigClass(config.LOGGING).configure()  # set up logging!
     irc_instance = irc.irc_instance()
     http_instance = http.server(irc_instance)
     gevent.spawn(irc.client, irc_instance)
