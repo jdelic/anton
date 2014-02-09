@@ -28,11 +28,11 @@ class TicketProvider(object):
 
     def route_command(self, subcommand, callback, args):
         if subcommand == 'search':
-            return provider.ticket_search(callback, args)
+            return self.ticket_search(callback, args)
         elif subcommand == 'show':
-            return provider.ticket_show(callback, args)
+            return self.ticket_show(callback, args)
         elif subcommand == 'create':
-            return provider.ticket_create(callback, args)
+            return self.ticket_create(callback, args)
 
         return "Unrecognised !ticket subcommand: %s" % subcommand
 
@@ -48,8 +48,10 @@ def ticket(callback, args):
     subcommand = tokens[0]
     subargs = tokens[1:]
 
+    result = None
     try:
-        provider.route_command(subcommand, callback, subargs)
+        result = provider.route_command(subcommand, callback, subargs)
     except TicketProviderErrorResponse as e:
-        _log.error(e)
+        _log.error(e, exc_info=True)
         return e
+    return result
