@@ -37,21 +37,24 @@ class TicketProvider(object):
         return "Unrecognised !ticket subcommand: %s" % subcommand
 
 
-c_provider = get_class_from_string(config.TICKET_PROVIDER)
-provider = c_provider()
+if config.TICKET_PROVIDER:
+    c_provider = get_class_from_string(config.TICKET_PROVIDER)
+    provider = c_provider()
 
-@commands.register("!ticket")
-def ticket(callback, args):
-    tokens = args.split()
-    if len(tokens) < 2:
-        return "Not enough arguments"
-    subcommand = tokens[0]
-    subargs = tokens[1:]
+    @commands.register("!ticket")
+    def ticket(callback, args):
+        tokens = args.split()
+        if len(tokens) < 2:
+            return "Not enough arguments"
+        subcommand = tokens[0]
+        subargs = tokens[1:]
 
-    result = None
-    try:
-        result = provider.route_command(subcommand, callback, subargs)
-    except TicketProviderErrorResponse as e:
-        _log.error(e, exc_info=True)
-        return e
-    return result
+        result = None
+        try:
+            result = provider.route_command(subcommand, callback, subargs)
+        except TicketProviderErrorResponse as e:
+            _log.error(e, exc_info=True)
+            return e
+        return result
+else:
+    _log.info("No ticket provider configured")
