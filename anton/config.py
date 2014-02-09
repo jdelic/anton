@@ -14,6 +14,7 @@ BOT_REALNAME = "antonia"
 BOT_NICKNAME = "antonia"
 BOT_CHANNELS = ("#twilightzone", "#laterpay",)
 JENKINS_CHANNEL = os.getenv("JENKINS_CHANNEL")
+TICKET_PROVIDER = "anton.modules.tickets.github.GitHubTicketProvider"
 GITHUB_CHANNEL = JENKINS_CHANNEL
 GITHUB_AUTH_TOKEN = os.environ['GITHUB_AUTH_TOKEN']
 GITHUB_DEFAULT_ORGANIZATION = 'laterpay'
