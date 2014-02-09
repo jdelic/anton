@@ -1,10 +1,13 @@
 # -* coding: utf-8 *-
 from __future__ import absolute_import
+import logging
 import re
 from anton import config
 from jira.client import JIRA
 from anton.modules.tickets import TicketProvider, TicketProviderErrorResponse
 
+
+_log = logging.getLogger(__name__)
 
 
 class JiraTicketProvider(TicketProvider):
@@ -37,15 +40,12 @@ class JiraTicketProvider(TicketProvider):
         return "search: not implemented yet"
 
     def ticket_show(self, callback, args):
-        output = []
         issue_id = args[0]
         if re.match("[A-Za-z0-9]{0,4}-[0-9]+", issue_id):
             issue = self.jira.issue(issue_id, fields='summary')
-            output.append('%s: %s (%sbrowse/%s)' % (issue.key, issue.fields.summary, self.url, issue.key))
+            return '%s: %s (%sbrowse/%s)' % (issue.key, issue.fields.summary, self.url, issue.key)
         else:
-            output.append("%s does not match [A-Za-z0-9]{0,4}-[0-9]+ (not a valid JIRA issue id?)" % issue_id)
-
-        return output
+            return "%s does not match [A-Za-z0-9]{0,4}-[0-9]+ (not a valid JIRA issue id?)" % issue_id
 
     def ticket_jql(self, callback, args):
         return "jql: not implemented yet"
