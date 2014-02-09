@@ -1,9 +1,11 @@
+import logging
 import events
-import gevent
-import traceback
 from anton import config
 
 from gevent.pywsgi import WSGIServer
+
+
+_log = logging.getLogger(__name__)
 
 HANDLERS = []
 
@@ -50,8 +52,8 @@ def http_handler(type, callback, env):
             if r == events.STOP:
                 break
     except Exception, e:
-        traceback.print_exc()
-        callback("exception occured:\n" + traceback.format_exc())
+        callback("An error occured (%s). Please check the log." % e)
+        _log.error(e, exc_info=True)
 
 
 def server(irc):

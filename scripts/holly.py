@@ -19,6 +19,7 @@ from anton import irc_client as irc
 
 gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
+gevent.monkey.patch_dns()
 
 
 def main():
@@ -40,9 +41,13 @@ if __name__ == "__main__":
         try:
             fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError, e:
-            _log.error("already running, exiting...", e)
+            _log.error("already running, exiting...", exc_info=True)
             sys.exit(1)
         try:
             main()
+        except Exception as e:
+            # give Sentry/Raven a chance to do some logging
+            _log.error("Anton encountered an error", exc_info=True)
+            raise
         finally:
             fcntl.lockf(f, fcntl.LOCK_UN)

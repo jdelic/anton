@@ -1,6 +1,11 @@
+import logging
 import events
 import traceback
 import re
+
+
+
+_log = logging.getLogger(__name__)
 
 COMMANDS = []
 
@@ -104,9 +109,8 @@ def chanmsg_handler(type, irc, obj):
             if r == events.STOP:
                 break
     except Exception, e:
-        traceback.print_exc()
-        callback("exception occured:")
-        callback(traceback.format_exc())
+        callback("An error occured (%s). Please check the log." % e)
+        _log.error(e, exc_info=True)
 
 
 @events.register("privmsg")
@@ -119,5 +123,5 @@ def privmsg_handler(type, irc, obj):
             if r == events.STOP:
                 break
     except Exception, e:
-        traceback.print_exc()
-        callback("exception occured:\n" + traceback.format_exc())
+        callback("An error occured (%s). Please check the log." % e)
+        _log.error(e, exc_info=True)

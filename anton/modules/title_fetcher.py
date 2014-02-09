@@ -1,3 +1,4 @@
+import logging
 from anton import util
 from bs4 import BeautifulSoup
 import requests
@@ -6,21 +7,20 @@ import re
 import HTMLParser
 
 
+_log = logging.getLogger(__name__)
+
+
 @commands.register(re.compile(r'https?://[^ $]*'))
 def fetch_title(callback, m):
     url = m.group()
 
-    try:
-        r = requests.get(url)
-    except Exception as e:  # Yeah yeah...
-        print e
-        return
+    r = requests.get(url)
 
     if r.status_code != requests.codes.ok:
         return
 
     if not (r.headers['Content-type'].startswith('text') or
-        r.headers['Content-type'].startswith('application/xml')):
+            r.headers['Content-type'].startswith('application/xml')):
         return
 
     # BeautifulSoup's objection to being passed something like

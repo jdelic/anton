@@ -1,5 +1,9 @@
+import logging
 from anton import util
 import sqlite3
+
+
+_log = logging.getLogger(__name__)
 
 
 class DB(object):
@@ -9,8 +13,8 @@ class DB(object):
         c = self.d.cursor()
         try:
             c.execute("CREATE TABLE store (key PRIMARY KEY, value);")
-        except sqlite3.OperationalError:
-            pass
+        except sqlite3.OperationalError as e:
+            _log.error(e, exc_info=True)
         finally:
             c.close()
 
