@@ -31,7 +31,7 @@ Here is an example config:
 
 Variable | Description
 --- | ---
-WORKING_DIR | "."
+DATA_PATH | The path to a folder where Anton can store it's SQLite database files (Default: ./data)
 IRC_SERVER | The hostname or IP address of the IRC server which Anton should connect to. (Default: 127.0.0.1)
 IRC_PORT | The port that Anton should connect to. (Default: 6667)
 HTTP_BINDADDRESS | The IP address that Anton should bind its webhook listener to. (Default: 127.0.0.1)

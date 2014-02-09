@@ -37,7 +37,11 @@ if __name__ == "__main__":
     logging.config.dictConfigClass(config.LOGGING).configure()  # set up logging!
     _log = logging.getLogger(__name__)
 
-    with open(os.path.join(config.WORKING_DIR, ".lock"), "w") as f:
+    if not os.path.exists(config.DATA_PATH):
+        _log.error("config.DATA_PATH (%s) does not exist or can't be read." % config.DATA_PATH)
+        sys.exit(1)
+
+    with open(os.path.join(config.DATA_PATH, ".lock"), "w") as f:
         try:
             fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError, e:

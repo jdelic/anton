@@ -74,16 +74,12 @@ def split_line(data, split_at=400, force_split_at=350, separator="..."):
     return result
 
 
-def data_path():
-    return os.path.join(config.WORKING_DIR, "data/")
-
-
 def data_file(value):
-    return os.path.join(data_path(), value)
+    return os.path.join(config.DATA_PATH, value)
 
 
 def utf8_iso8859_1(data, table=dict((x, x.decode("iso-8859-1")) for x in map(chr, range(0, 256)))):
-    return (table.get(data.object[data.start]), data.start + 1)
+    return table.get(data.object[data.start]), data.start + 1
 
 codecs.register_error("mixed-iso-8859-1", utf8_iso8859_1)
 
