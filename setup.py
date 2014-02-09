@@ -12,7 +12,7 @@ f.close()
 
 setup(
     name='irc.anton',
-    data_files=[('', ['package.yaml', ]), ],
+    data_files=[('', ['package.yaml', 'requirements.txt', 'Procfile', 'README.md']), ],
     scripts=[
         'scripts/bot.py',
         'scripts/run'
