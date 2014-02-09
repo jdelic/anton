@@ -3,10 +3,13 @@ import json
 import events
 import gevent
 import traceback
+import logging
 
 from anton import config
 from anton import util
-from anton.log import *
+
+
+_log = logging.getLogger(__name__)
 
 
 def connect(addr):
@@ -54,7 +57,7 @@ def process_line(irc, type, obj):
     elif type == "startup":
         irc.write("join", {"channel": "#twilightzone"})
     else:
-        LOG("bad command type: %r: %r" % (type, obj))
+        _log.warning("bad command type: %r: %r" % (type, obj))
 
 
 def irc_instance():
@@ -63,11 +66,11 @@ def irc_instance():
 
 def client(irc):
     while True:
-        LOG("connecting...")
+        _log.info("connecting...")
         s = connect(config.BACKEND)
         irc.socket = s
 
-        LOG("connected!")
+        _log.info("connected!")
 
         irc.wallops("holly online")
         buf = ""
@@ -83,14 +86,13 @@ def client(irc):
             for line in lines:
                 try:
                     j = json.loads(line, encoding="iso-8859-1", strict=False)
-                except ValueError:
-                    LOG("line: " + repr(line))
-                    traceback.print_exc()
+                except ValueError, e:
+                    _log.error("line: " + repr(line), e)
                     continue
 
                 gevent.spawn(process_line, irc, j["type"], j.get("data"))
 
         irc.socket = None
-        LOG("disconnected, retrying in 5s...")
+        _log.info("disconnected, retrying in 5s...")
         gevent.sleep(5)
 

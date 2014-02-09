@@ -1,11 +1,15 @@
+import logging
 import socket
 import events
 import gevent
 import traceback
 
-from anton.log import *
 from anton import util
 from anton import config
+
+
+_log = logging.getLogger(__name__)
+
 
 def connect(addr):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -88,7 +92,7 @@ def process_line(irc, type, obj):
         for channel in config.BOT_CHANNELS:
             irc.write("JOIN %s" % channel)
     else:
-        LOG("bad command type: %r: %r" % (type, obj))
+        _log.warning("bad command type: %r: %r" % (type, obj))
 
 
 def irc_instance():
@@ -97,11 +101,11 @@ def irc_instance():
 
 def client(irc):
     while True:
-        LOG("connecting...")
+        _log.info("connecting...")
         s = connect(config.BACKEND)
         irc.socket = s
 
-        LOG("connected!")
+        _log.info("connected!")
 
         irc.wallops("holly online")
         buf = ""
@@ -117,15 +121,14 @@ def client(irc):
             for line in lines:
                 try:
                     j = parse_line(line)
-                except ValueError:
-                    LOG("line: " + repr(line))
-                    traceback.print_exc()
+                except ValueError, e:
+                    _log.error("line: " + repr(line), e)
                     continue
                 print j
 
                 gevent.spawn(process_line, irc, j["type"], j.get("data"))
 
         irc.socket = None
-        LOG("disconnected, retrying in 5s...")
+        _log.info("disconnected, retrying in 5s...")
         gevent.sleep(5)
 
