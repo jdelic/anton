@@ -69,9 +69,64 @@ By sending a HTTP POST to GitHub via curl. The following example is adapted from
 This will return a JSON object that has your GitHub auth token. The `note` will show up in your GitHub user account.
 As in the above example, LaterPay has a dedicated jenkins user on GitHub that we use for this kind of thing.
 
+## How do I connect Anton to JIRA?
+
+JIRA has the most convoluted setup path for OAuth imaginable. That said: Here is how you authorize Anton on JIRA:
+
+First, use `openssl` to generate a RSA key pair:
+
+    openssl genrsa -out anton.secretkey 2048
+    openssl rsa -pubout -in anton.secretkey
+
+Now follow these steps:
+
+  * Log into JIRA as an Administrator
+  * Go to Settings -> Add-Ons -> Application Links
+  * Enter the URL of your Anton bot (or any URL, really) and click "Create New Link"
+  * Click "Continue"
+  * Enter an application name like "Anton IRC bot" and select "Generic Application", leave the other fields empty.
+  * Click "Continue"
+  * Now click "Edit" next to the "Anton IRC bot" entry
+  * Click on "Incoming Authentication"
+  * Set consumer key to the value of `JIRA_AUTH_ID` in Anton's config (for example: "anton")
+  * Set consumer name to "Anton IRC bot"
+  * Paste the public key *without* the `-----BEGIN PUBLIC KEY-----` and `-----END PUBLIC KEY-----` lines into the
+    "Public Key" field
+  * Click "Save"
+  * Log out of JIRA!
+
+You will need to put the private key either into `config.py` or into the `JIRA_AUTH_PRIVATEKEY` environment variable.
+In this case, it's good to know that DJB `envdir` will replace ASCII 0 with newline characters when reading files
+in an envdir.
+
+Finally it's time to authorize Anton. Do *NOT* use an JIRA administrator account for this (because: security!). Inside
+Anton's virtualenv run this:
+
+    bin/jirashell -s [your JIRA server URL] -od -ck [JIRA_AUTH_ID] -k /path/to/anton.secretkey -pt
+
+  * If, like me, you don't have browsers on your development VMs, you'll need to patch
+    `lib/python2.7/site-packages/tools/jirashell.py` line 52 to output `auth_url`! I submitted a pull request for
+    that.
+  * This command will launch a browser and go to your JIRA server. This is why you logged out before. Now log in with an
+    *unprivileged* account (for example a member of the "Developers" group, which has access to all tickets which you
+    want the bot to have access to).
+  * Authorize the application.
+  * `jirashell` will output a OAuth1 token and secret. You need to put these into `JIRA_AUTH_TOKEN` and
+    `JIRA_AUTH_SECRET`.
+
+Finally... you're done.
+
 ## What webhooks does Anton support?
 
 Anton supports GitHub post requests and Jenkins callbacks.
+
+## How do I develop with Anton?
+
+Clone it, create a virtualenv and pip install it:
+
+    git clone https://github.com/laterpay/anton.git anton
+    virtualenv .env
+    .env/bin/pip install -e anton
 
 ## Future notes
 
