@@ -6,6 +6,6 @@ from anton.modules import zalgo
 from anton.modules import slogan
 from anton.modules import title_fetcher
 from anton.modules import jenkins
-from anton.modules.tickets import github
 from anton.modules import huzzah
-
+from anton.modules import tickets
+from anton.modules import debug
