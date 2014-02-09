@@ -44,17 +44,15 @@ BOT_CHANNELS | A comma-separated list of channels the bot should connect to. (De
 SENTRY_DSN | An optional DSN that will connect Anton's error handling to a Sentry instance
 
 ## List of Anton module configuration variables
+
 Variable | Description
 --- | ---
 JENKINS_CHANNEL | The channel where Anton posts webhook calls made to the Jenkins CI handler (Default: #twilightzone)
-TICKET_PROVIDER | If you want to connect Anton to a ticket tracker, it currently supports JIRA and GitHub tickets. Set
-                | this to either "anton.modules.tickets.jira.JiraTicketProvider" or
-                | "anton.modules.tickets.github.GitHubTicketProvider" accordingly.
+TICKET_PROVIDER | If you want to connect Anton to a ticket tracker, it currently supports JIRA and GitHub tickets. Set this to either `anton.modules.tickets.jira.JiraTicketProvider` or `anton.modules.tickets.github.GitHubTicketProvider` accordingly.
 GITHUB_CHANNEL  | The channel where Anton posts webhook calls made to the GitHub handler (Default: #twilightzone)
 GITHUB_AUTH_TOKEN | A GitHub OAuth2 token for Anton (see below for docs on how to create this)
 GITHUB_DEFAULT_ORGANIZATION | The default organization to search (Default: 'laterpay')
 GITHUB_DEFAULT_REPO | The default repository name to search (Default: 'laterpay')
-
 JIRA_URL | A HTTP(S) URL pointing to your organization's JIRA (Default: "https://laterpay.atlassian.net")
 JIRA_AUTH_TOKEN | A JIRA OAuth1 token (see below for docs on how to create this)
 JIRA_AUTH_SECRET | A JIRA OAuth1 secret key (see below for docs on how to create this)
