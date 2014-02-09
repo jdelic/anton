@@ -17,7 +17,7 @@ def import_module(modulename):
     try:
         __import__(modulename)
     except ImportError as e:
-        raise Exception("Can't import ticket provider %s")
+        raise
 
     return sys.modules[modulename]
 
@@ -26,7 +26,7 @@ def get_class_from_string(fqcn):
     try:
         modulename, classname = fqcn.rsplit('.', 1)
     except ValueError:
-        raise Exception("Can't parse ticket provider %s, it needs to be a fully qualified class name" % fqcn)
+        raise Exception("Can't parse class name %s, it needs to be a fully qualified class name" % fqcn)
 
     module = import_module(modulename)
 
