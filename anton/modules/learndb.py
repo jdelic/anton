@@ -1,6 +1,6 @@
 from anton import commands
 from anton import db
-import events
+from anton import events
 from anton import http
 import re
 import cgi

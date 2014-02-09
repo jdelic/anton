@@ -3,15 +3,16 @@
 import fcntl
 import sys
 import gevent
+import gevent.monkey
 import os
-import http
+from anton import http
 from anton.log import *
 
 # this import is necessary to activate all plugins
 from anton import modules
 
 from anton import config
-from anton.config import irc as irc
+from anton import irc_client as irc
 
 
 gevent.monkey.patch_socket()

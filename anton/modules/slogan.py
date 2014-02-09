@@ -1,8 +1,8 @@
 from anton import commands
 import urllib
-import util
+from anton import util
 
-from BeautifulSoup import BeautifulSoup as soup
+from bs4 import BeautifulSoup as soup
 
 
 class NotDefinedException(Exception):
