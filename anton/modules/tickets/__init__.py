@@ -1,12 +1,15 @@
 # -* encoding: utf-8 *-
+import logging
 from anton import config
 from anton import commands
 from anton.util import get_class_from_string
 
 
+_log = logging.getLogger(__name__)
+
+
 class TicketProviderErrorResponse(Exception):
-    def __init__(self, msg):
-        self.msg = msg
+    pass
 
 
 class TicketProvider(object):
@@ -14,14 +17,24 @@ class TicketProvider(object):
     Interface to implement for connectors between anton and
     various ticket providers, i.e. JIRA, GitHub, etc.
     """
-    def ticket_search(self, callback, owner, repo, subargs):
+    def ticket_search(self, callback, args):
         pass
 
-    def ticket_show(callback, owner, repo, subargs):
+    def ticket_show(self, callback, args):
         pass
 
-    def ticket_create(callback, owner, repo, subargs):
+    def ticket_create(self, callback, args):
         pass
+
+    def route_command(self, subcommand, callback, args):
+        if subcommand == 'search':
+            return provider.ticket_search(callback, args)
+        elif subcommand == 'show':
+            return provider.ticket_show(callback, args)
+        elif subcommand == 'create':
+            return provider.ticket_create(callback, args)
+
+        return "Unrecognised !ticket subcommand: %s" % subcommand
 
 
 c_provider = get_class_from_string(config.TICKET_PROVIDER)
@@ -36,14 +49,7 @@ def ticket(callback, args):
     subargs = tokens[1:]
 
     try:
-        if subcommand == 'search':
-            return provider.ticket_search(callback, subargs)
-        elif subcommand == 'show':
-            return provider.ticket_show(callback, subargs)
-        elif subcommand == 'create':
-            return provider.ticket_create(callback, subargs)
-        else:
-            return "Unrecognised !ticket subcommand: %s" % subcommand
+        provider.route_command(subcommand, callback, subargs)
     except TicketProviderErrorResponse as e:
-        # FIXME: handle this by sending it to IRC
-        pass
+        _log.error(e)
+        return e
