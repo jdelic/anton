@@ -30,6 +30,7 @@ Here is an example config:
 ## List of Anton configuration variables
 
 Variable | Description
+--- | ---
 WORKING_DIR | "."
 IRC_SERVER | The hostname or IP address of the IRC server which Anton should connect to. (Default: 127.0.0.1)
 IRC_PORT | The port that Anton should connect to. (Default: 6667)
@@ -44,6 +45,7 @@ SENTRY_DSN | An optional DSN that will connect Anton's error handling to a Sentr
 
 ## List of Anton module configuration variables
 Variable | Description
+--- | ---
 JENKINS_CHANNEL | The channel where Anton posts webhook calls made to the Jenkins CI handler (Default: #twilightzone)
 TICKET_PROVIDER | If you want to connect Anton to a ticket tracker, it currently supports JIRA and GitHub tickets. Set
                 | this to either "anton.modules.tickets.jira.JiraTicketProvider" or
