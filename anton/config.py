@@ -4,21 +4,34 @@ import sys
 import raven
 
 
-WORKING_DIR = "."
-BACKEND = os.getenv("IRC_SERVER_HOST"), int(os.getenv("IRC_SERVER_PORT"))
+DATA_PATH = os.getenv("DATA_DIR", "./data/")
+IRC_SERVER = os.getenv("IRC_SERVER", "127.0.0.1")
+IRC_PORT = os.getenv("IRC_PORT", "6667")
+BACKEND = IRC_SERVER, int(IRC_PORT)
 HTTP_ROOT = "/bot"
-HTTP_LISTEN = "0.0.0.0", int(os.getenv("PORT"))
+HTTP_BINDADDRESS = os.getenv("HTTP_BINDADDRESS", "127.0.0.1")
+HTTP_PORT = os.getenv("HTTP_PORT", "8000")
+HTTP_LISTEN = HTTP_BINDADDRESS, int(HTTP_PORT)
 
-BOT_USERNAME = "antonia"
-BOT_REALNAME = "antonia"
-BOT_NICKNAME = "antonia"
-BOT_CHANNELS = ("#twilightzone", "#laterpay",)
-JENKINS_CHANNEL = os.getenv("JENKINS_CHANNEL")
-TICKET_PROVIDER = "anton.modules.tickets.github.GitHubTicketProvider"
-GITHUB_CHANNEL = JENKINS_CHANNEL
-GITHUB_AUTH_TOKEN = os.environ['GITHUB_AUTH_TOKEN']
-GITHUB_DEFAULT_ORGANIZATION = 'laterpay'
-GITHUB_DEFAULT_REPO = 'laterpay'
+BOT_USERNAME = os.getenv("BOT_USERNAME", "antonia")
+BOT_REALNAME = os.getenv("BOT_REALNAME", "antonia")
+BOT_NICKNAME = os.getenv("BOT_NICKNAME", "antonia")
+BOT_CHANNELS = os.getenv("BOT_CHANNELS", "#twilightzone")
+
+JENKINS_CHANNEL = os.getenv("JENKINS_CHANNEL", "#twilightzone")
+
+TICKET_PROVIDER = os.getenv("TICKET_PROVIDER", "")
+
+GITHUB_CHANNEL = os.getenv("GITHUB_CHANNEL", "#twilightzone")
+GITHUB_AUTH_TOKEN = os.getenv("GITHUB_AUTH_TOKEN", "")
+GITHUB_DEFAULT_ORGANIZATION = os.getenv("GITHUB_DEFAULT_ORGANIZATION", "laterpay")
+GITHUB_DEFAULT_REPO = os.getenv("GITHUB_DEFAULT_REPO", "laterpay")
+
+JIRA_URL = os.getenv("JIRA_URL", "")
+JIRA_AUTH_TOKEN = os.getenv("JIRA_AUTH_TOKEN", "")
+JIRA_AUTH_SECRET = os.getenv("JIRA_AUTH_SECRET", "")
+JIRA_AUTH_ID = os.getenv("JIRA_AUTH_ID", "anton")
+JIRA_AUTH_PRIVATEKEY = os.getenv("JIRA_AUTH_PRIVATEKEY", "")
 
 
 LOGGING = {
