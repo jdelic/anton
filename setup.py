@@ -1,14 +1,17 @@
 from distutils.core import setup
+from pip.req import parse_requirements
 from setuptools import find_packages
+from distutils.command.install import INSTALL_SCHEMES
 
 import time
 _version = "1.0.dev%s" % int(time.time())
 _packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
 
-f = open("requirements.txt", "r")
-requires = f.readlines()
-requires = [r.strip() for r in requires]
-f.close()
+for scheme in INSTALL_SCHEMES.values():
+    scheme['data'] = scheme['purelib']
+
+reqs_generator = parse_requirements("requirements.txt")
+reqs = [str(r.req) for r in reqs_generator]
 
 setup(
     name='irc.anton',
@@ -19,5 +22,5 @@ setup(
     ],
     version=_version,
     packages=_packages,
-    install_requires=requires,
+    install_requires=reqs,
 )
