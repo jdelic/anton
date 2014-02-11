@@ -77,7 +77,6 @@ def to_source(prefix):
 
 
 def process_line(irc, type, obj):
-    print irc, type, obj
     if type == "PING":
         irc.write("PONG " + obj["args"][0])
     elif type == "PRIVMSG":
