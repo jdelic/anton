@@ -48,8 +48,11 @@ class JiraTicketProvider(TicketProvider):
 
         output = []
         issues = self.jira.search_issues(jql, maxResults=5)
-        for issue in issues:
-            output.append(self._format_issue(issue))
+        if len(issues) == 0:
+            output.append("No issues found matching '{term}'".format(term=' '.join(args)))
+        else:
+            for issue in issues:
+                output.append(self._format_issue(issue))
 
         return '\n'.join(output)
 
