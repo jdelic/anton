@@ -11,3 +11,5 @@ rpm_build_deps:
     - python2.7-pip-laterpay
 rpm_run_deps:
     - python2.7-laterpay
+    - libevent-devel
+    - libxslt-devel
