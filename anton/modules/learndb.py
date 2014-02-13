@@ -140,9 +140,9 @@ def on_join(type, irc, obj):
 
 @http.register(re.compile("^/learndb$"))
 def http_handler(env, m, irc):
-    t = ["<table><tbody>"]
+    t = [u"<html><head><title>learndb index</title></head><body><table><tbody>"]
     for key, value in DB.iteritems():
-        t.append("<tr><td><b>%s</b></td><td>%s</td></tr>" % (cgi.escape(key), cgi.escape(value)))
+        t.append(u"<tr><td><b>%s</b></td><td>%s</td></tr>" % (cgi.escape(key), cgi.escape(value)))
 
-    t.append("</tbody></table>")
-    return "text/html", "\n".join(t)
+    t.append(u"</tbody></table></body></html>")
+    return "text/html", u"\n".join(t).encode('utf-8')
