@@ -45,15 +45,15 @@ def register(r):
 
 
 @events.register("http")
-def http_handler(type, callback, env):
+def http_handler(type, context, env):
     try:
         for handler in HANDLERS:
-            r = handler(callback, env)
+            r = handler(context, env)
             if r == events.STOP:
                 break
-    except Exception, e:
-        callback("An error occured (%s). Please check the log." % e)
+    except Exception as e:
         _log.error(e, exc_info=True)
+        context['callback']("An error occured (%s). Please check the log." % e, response_line="500 SERVER ERROR")
 
 
 def server(irc):
