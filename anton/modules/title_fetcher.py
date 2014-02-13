@@ -1,4 +1,5 @@
 import logging
+from requests.exceptions import RequestException
 from anton import util
 from bs4 import BeautifulSoup
 import requests
@@ -14,7 +15,13 @@ _log = logging.getLogger(__name__)
 def fetch_title(callback, m):
     url = m.group()
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except RequestException as e:
+        # we catch this so it doesn't bubble up as usually someone
+        # just posted a malformed URL to IRC
+        return "nope, didn't get it (%s)" % str(e)
+        pass
 
     if r.status_code != requests.codes.ok:
         return
@@ -45,6 +52,8 @@ def fetch_title(callback, m):
         if len(title) > 200:
             title = "%s..." % title[:197]
         return title
+
+    return "Untitled (no <title> tag found)"
 
 if __name__ == '__main__':
     print fetch_title(None, re.match(r'http://[^ $]*', "foo http://google.com/ bar"))
