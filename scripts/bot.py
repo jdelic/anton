@@ -37,6 +37,12 @@ if __name__ == "__main__":
     logging.config.dictConfigClass(config.LOGGING).configure()  # set up logging!
     _log = logging.getLogger(__name__)
 
+    def log_bubbledup_exception(type, value, traceback):
+        # this will go to sentry if config.SENTRY_DSN is set and stdout
+        _log.critical("%s: %s" % (type, value), exc_info=True)
+
+    sys.excepthook = log_bubbledup_exception
+
     if not os.path.exists(config.DATA_PATH):
         _log.error("config.DATA_PATH (%s) does not exist or can't be read." % config.DATA_PATH)
         sys.exit(1)
