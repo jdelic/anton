@@ -28,10 +28,10 @@ def http_handler(env, m, irc):
     print payload # Debug, because the plugin docs lie
 
     build = payload['build']
-    status = build['status']
-
     if build['phase'] != 'FINISHED': # No need for STARTED/COMPLETED/other
         return
+
+    status = build['status']
 
     # Shonk, for colour
     if status == "FAILURE":
