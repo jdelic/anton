@@ -21,7 +21,6 @@ def fetch_title(callback, m):
         # we catch this so it doesn't bubble up as usually someone
         # just posted a malformed URL to IRC
         return "nope, didn't get it (%s)" % str(e)
-        pass
 
     if r.status_code != requests.codes.ok:
         return
