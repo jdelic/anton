@@ -25,8 +25,7 @@ except AttributeError:
 @http.register(re.compile("^/jenkins$"))
 def http_handler(env, m, irc):
     payload = json.loads(env['wsgi.input'].read())
-    print payload # Debug, because the plugin docs lie
-
+    
     build = payload['build']
     if build['phase'] != 'FINISHED': # No need for STARTED/COMPLETED/other
         return
