@@ -2,4 +2,7 @@
 data
 holly.log
 .lock
-config.py
+.idea
+*.iml
+*.egg-info
+

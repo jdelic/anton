@@ -1,0 +1,4 @@
+include package.yaml
+include Procfile
+include requirements.txt
+include README.md

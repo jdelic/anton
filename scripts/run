@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec setuidgid $LATERPAY_SERVICE_USER envdir $LATERPAY_SERVICE_ENVDIR bin/python -u bin/bot.py
