@@ -16,7 +16,11 @@ def fetch_title(callback, m):
     url = m.group()
 
     try:
-        r = requests.get(url)
+        # SSL verify is for pussys who think PKI works ;)
+        # it also shouldn't really matter for this particular
+        # module, but stops anton from failing at requesting
+        # some internal websites
+        r = requests.get(url, verify=False)
     except RequestException as e:
         # we catch this so it doesn't bubble up as usually someone
         # just posted a malformed URL to IRC
