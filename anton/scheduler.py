@@ -27,6 +27,16 @@ The cron format is either 5 or 6 columns with the optional 6th column designatin
   | '---------------------- hour (0 - 23)
   '-------------------------- min (0 - 59)
 
+You can schedule tasks in a pytz timezone, by using the `sched_tz` argument. Otherwise the scheduling timezone
+will default to UTC.
+::
+    import pytz
+    from anton.scheduler import schedule
+    @schedule('0 14 * * *', sched_tz=pytz.timezone("Europe/Berlin"))
+    def scheduled_in_Germany_DST_aware():
+        # ... run at 2pm German time
+        pass
+
 Examples:
 ::
     import pytz
@@ -69,6 +79,11 @@ class schedule(object):
         self.irc = None
         self._scheduled = False
 
+        if "sched_tz" in kwargs:
+            self.sched_tz = kwargs["sched_tz"]
+        else:
+            self.sched_tz = pytz.UTC
+
         try:
             croniter(self.cronstr)
         except ValueError:
@@ -95,7 +110,7 @@ class schedule(object):
         if irc is not None:
             self.irc = irc
 
-        base = datetime.now(tz=pytz.UTC)
+        base = datetime.now(tz=self.sched_tz)
         delta = croniter(self.cronstr, base).get_next(datetime) - base
         # wait at least 1 second
         secs = 1 if delta.seconds == 0 else delta.seconds
