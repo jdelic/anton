@@ -92,6 +92,8 @@ class schedule(object):
     def __call__(self, fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
+            # the task has executed and is currently not scheduled
+            self._scheduled = False
             # schedule the next execution if fn returns True
             ret = fn(self, *args, **kwargs)
             if ret:
@@ -117,6 +119,7 @@ class schedule(object):
         _log.debug("Scheduling %s for execution in %s seconds" % (str(self.task), secs))
         # schedule async execution in the event loop
         gevent.spawn_later(secs, self.task, *self.args, **self.kwargs)
+        self._scheduled = True
 
 
 def _jobappend(job):
