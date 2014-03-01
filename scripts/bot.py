@@ -29,7 +29,7 @@ def main():
 
     # Abuse WSGIServer's serve_forever() implementation as a "daemonization
     # kit" that handles signals correctly.
-    _log.info("holly listening at %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
+    _log.info("anton listening on %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
     http_instance.serve_forever()
 
 
