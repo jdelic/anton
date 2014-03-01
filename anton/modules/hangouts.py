@@ -20,7 +20,7 @@ CALENDAR_API_SCOPE = "https://www.googleapis.com/auth/calendar"
 
 
 for k in ['GOOGLE_HANGOUT_OAUTH_TOKEN', 'GOOGLE_HANGOUT_CALENDAR_ID', 'GOOGLE_HANGOUT_OAUTHSECRET',
-          'GOOGLE_HANGOUT_CLIENT_ID']:
+          'GOOGLE_HANGOUT_CLIENT_ID', 'GOOGLE_HANGOUT_CLIENT_EMAIL']:
     if not hasattr(config, k):
         raise Exception("No value for config.%s, no !hangout for you :(" % k)
 
@@ -29,4 +29,7 @@ for k in ['GOOGLE_HANGOUT_OAUTH_TOKEN', 'GOOGLE_HANGOUT_CALENDAR_ID', 'GOOGLE_HA
         pass
 
 
+
+if __name__ == "__main__":
+    print("All config available. This will now help you create a refresh token:")
 
