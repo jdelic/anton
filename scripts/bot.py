@@ -8,13 +8,12 @@ import gevent.monkey
 import os
 import logging
 import logging.config
-from anton import http
+from anton import http, scheduler
+import anton.config as config
+from anton import irc_client as irc
 
 # this import is necessary to activate all plugins
 from anton import modules
-
-import anton.config as config
-from anton import irc_client as irc
 
 
 gevent.monkey.patch_socket()
@@ -26,6 +25,7 @@ def main():
     irc_instance = irc.irc_instance()
     http_instance = http.server(irc_instance)
     gevent.spawn(irc.client, irc_instance)
+    scheduler.setup(irc_instance)
 
     # Abuse WSGIServer's serve_forever() implementation as a "daemonization
     # kit" that handles signals correctly.
