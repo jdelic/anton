@@ -7,4 +7,5 @@ wsgiref==0.1.2
 cssselect==0.9.1
 jira-python>=0.13
 raven==4.0.4
-pycrypto==2.6  # required for jira-python
+pycrypto>=2.6  # required for jira-python
+
