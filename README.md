@@ -58,6 +58,11 @@ JIRA_AUTH_TOKEN | A JIRA OAuth1 token (see below for docs on how to create this)
 JIRA_AUTH_SECRET | A JIRA OAuth1 secret key (see below for docs on how to create this)
 JIRA_AUTH_ID | The JIRA application link ID (Default: "anton")
 JIRA_AUTH_PRIVATEKEY | A RSA private key, starting with "-----BEGIN RSA PRIVATE KEY-----" registered with JIRA.
+GOOGLE_HANGOUT_CLIENT_ID | A Google OAuth2 application client ID from your developer console
+GOOGLE_HANGOUT_CLIENT_SECRET | The OAuth2 secret connected to the client ID
+GOOGLE_HANGOUT_REFRESH_TOKEN | A OAuth2 refresh token with access to the Google Calendar API, which can be obtained by running `python -m anton.moduules.hangouts`
+GOOGLE_HANGOUT_CALENDAR_ID | The calendar to use for creating Google hangouts (Default: "primary")
+GOOGLE_HANGOUT_DEFAULT_LENGTH | The default event length for a Google hangout created through IRC (Default: 7200 seconds)
 
 ## How do I create a GitHub auth token?
 
@@ -115,6 +120,28 @@ Anton's virtualenv run this:
     `JIRA_AUTH_SECRET`.
 
 Finally... you're done.
+
+## How do I connect Anton to Google Hangouts?
+
+Anton's hangouts module uses a hack to go through Google Calendar to create Google Hangout links that IRC users can
+join. You need to obtain the necessary configuration values from two places: Your Google Developer console and
+Anton's hangouts module.
+
+  1. Create device client credentials on your [Google developer console](https://console.developers.google.com/)
+     for Anton, choose "Other" as its OS.
+  2. Click on "APIs & auth"->"Consent screen" and set an application name. I recommend "Anton, the IRC bot".
+  3. Set anton.config.GOOGLE_HANGOUT_CLIENT_ID to the new ID and anton.config.GOOGLE_HANGOUT_CLIENT_SECRET accordingly.
+  4. Run the module to receive authorization credentials. You'll need internet access for that.
+        `python -m anton.modules.hangouts`
+  5. Use your browser to navigate to the provided URL and enter the provided code while Anton polls
+     Google for an access token. Allow access through a user account who belongs to your organization if you use
+     Google Apps for Business. Also make sure to set `GOOGLE_HANGOUT_CALENDAR_ID` to a calendar which is not used
+     for other purposes!
+  6. Complete the process in under 30 minutes.
+  7. Put the acquired refresh token into your config.
+
+Enable "Automatically add video calls to events I create" in Google Calendar's settings for the user who authorized
+Anton to access his calendars.
 
 ## What webhooks does Anton support?
 
