@@ -12,9 +12,6 @@ from anton import http, scheduler
 import anton.config as config
 from anton import irc_client as irc
 
-# this import is necessary to activate all plugins
-from anton import modules
-
 
 gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
@@ -54,6 +51,8 @@ if __name__ == "__main__":
             _log.error("already running, exiting...", exc_info=True)
             sys.exit(1)
         try:
+            # this import is necessary to activate all plugins
+            from anton import modules
             main()
         except Exception as e:
             # give Sentry/Raven a chance to do some logging
@@ -61,3 +60,4 @@ if __name__ == "__main__":
             raise
         finally:
             fcntl.lockf(f, fcntl.LOCK_UN)
+
