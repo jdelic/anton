@@ -1,8 +1,6 @@
 
 import os
 import sys
-import raven
-
 
 DATA_PATH = os.getenv("DATA_PATH", "./data/")
 IRC_SERVER = os.getenv("IRC_SERVER", "127.0.0.1")
