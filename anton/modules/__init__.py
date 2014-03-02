@@ -10,3 +10,4 @@ from anton.modules import huzzah
 from anton.modules import tickets
 from anton.modules import debug
 from anton.modules import github
+from anton.modules import hangouts
