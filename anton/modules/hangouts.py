@@ -32,12 +32,12 @@ Authorize Anton like this:
         python -m anton.modules.hangouts
   4. Use your browser to navigate to the provided URL and enter the provided code while Anton polls
      Google for an access token.
-  5. Complete the process in under 30 minuntes.
+  5. Complete the process in under 30 minutes.
 
 NOTE: If you get the error "invalid_client", you have to go to your developer console into
 "APIs & auth"->"Consent screen" and set an application name. I recommend "Anton, the IRC bot".
 
-!!! IMPORTANT: You MUST enable "Automatically add video calls to events I create" in Google Calendar's Settings !!!
+!!! IMPORTANT: You MUST enable "Automatically add video calls to events I create" in Google Calendar's settings !!!
 
 Usage example of this module:
 jdelic: !hangout Guys, let's talk
