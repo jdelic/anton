@@ -130,7 +130,7 @@ Anton's hangouts module.
   1. Create device client credentials on your [Google developer console](https://console.developers.google.com/)
      for Anton, choose "Other" as its OS.
   2. Click on "APIs & auth"->"Consent screen" and set an application name. I recommend "Anton, the IRC bot".
-  3. Set anton.config.GOOGLE_HANGOUT_CLIENT_ID to the new ID and anton.config.GOOGLE_HANGOUT_CLIENT_SECRET accordingly.
+  3. Set the environment variables `GOOGLE_HANGOUT_CLIENT_ID` and `GOOGLE_HANGOUT_CLIENT_SECRET` to the new client id and secret accordingly.
   4. Run the module to receive authorization credentials. You'll need internet access for that.
         `python -m anton.modules.hangouts`
   5. Use your browser to navigate to the provided URL and enter the provided code while Anton polls
