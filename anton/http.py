@@ -68,7 +68,11 @@ def http_handler(type, context, env):
 
 
 def server(irc):
-    # does this run in a greenlet?
+    """
+    The HTTP server greenlet. This function returns a gevent.pywsgi.WSGIServer instance
+    which Anton's main() then runs as the event loop consumer through its serve_forever
+    method.
+    """
     def application(env, start_response):
         response = [None]
 

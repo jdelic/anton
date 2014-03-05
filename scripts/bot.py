@@ -23,9 +23,10 @@ def main():
     irc_instance = IRC()
     http_instance = http.server(irc_instance)
     irc_instance.start()
-    # Abuse WSGIServer's serve_forever() implementation as a "daemonization
-    # kit" that handles signals correctly.
     _log.info("anton listening on %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
+    # Run WSGIServer's serve_forever() implementation as a cooperative
+    # event loop consumer.
+    # FIXME: handle signals correctly
     http_instance.serve_forever()
 
 
