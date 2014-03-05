@@ -11,7 +11,7 @@ import logging.config
 from anton import http
 
 import anton.config as config
-from anton import irc_client as irc
+from anton.irc_client import IRC
 
 
 gevent.monkey.patch_socket()
@@ -20,10 +20,9 @@ gevent.monkey.patch_dns()
 
 
 def main():
-    irc_instance = irc.irc_instance()
+    irc_instance = IRC()
     http_instance = http.server(irc_instance)
-    gevent.spawn(irc.client, irc_instance)
-
+    irc_instance.start()
     # Abuse WSGIServer's serve_forever() implementation as a "daemonization
     # kit" that handles signals correctly.
     _log.info("anton listening on %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
