@@ -1,10 +1,11 @@
 # -* coding: utf-8 *-
-from datetime import datetime
+from datetime import datetime, tzinfo
 from functools import wraps
 import logging
 from croniter.croniter import croniter
 import gevent
 import pytz
+from pytz.exceptions import UnknownTimeZoneError
 
 """
 Provides a simple per-second task scheduler which allows fixed execution with a cron-like interface. If a scheduled
@@ -28,7 +29,7 @@ The cron format is either 5 or 6 columns with the optional 6th column designatin
   '-------------------------- min (0 - 59)
 
 You can schedule tasks in a pytz timezone, by using the `sched_tz` argument. Otherwise the scheduling timezone
-will default to UTC.
+will default to UTC. `sched_tz can be a datetime.tzinfo object or a string like "Europe/Berlin".
 ::
     import pytz
     from anton.scheduler import schedule
@@ -80,7 +81,15 @@ class schedule(object):
         self._scheduled = False
 
         if "sched_tz" in kwargs:
-            self.sched_tz = kwargs["sched_tz"]
+            if isinstance(kwargs["sched_tz"], str):
+                try:
+                    self.sched_tz = pytz.timezone(kwargs["sched_tz"])
+                except UnknownTimeZoneError:
+                    _log.error("Invalid timezone %s" % kwargs["sched_tz"], exc_info=True)
+            elif isinstance(kwargs["sched_tz"], tzinfo):
+                self.sched_tz = kwargs["sched_tz"]
+            else:
+                raise ValueError("sched_tz must be a datetime.tzinfo instance or a valid timezone string")
         else:
             self.sched_tz = pytz.UTC
 
