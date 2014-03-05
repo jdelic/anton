@@ -14,17 +14,17 @@ _log = logging.getLogger(__name__)
 class IRC(Greenlet):
     def __init__(self):
         super(IRC, self).__init__()
-        self.socket = None
+        self._socket = None
 
     def connect(self, addr):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(addr)
-        self.socket.send("USER %s %s %s :%s\r\n" % (config.BOT_USERNAME, "wibble", "wibble", config.BOT_REALNAME))
-        self.socket.send("NICK %s\r\n" % config.BOT_NICKNAME)
+        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._socket.connect(addr)
+        self._socket.send("USER %s %s %s :%s\r\n" % (config.BOT_USERNAME, "wibble", "wibble", config.BOT_REALNAME))
+        self._socket.send("NICK %s\r\n" % config.BOT_NICKNAME)
         return True
 
     def write(self, message):
-        self.socket.send("%s\r\n" % message.encode("utf8"))
+        self._socket.send("%s\r\n" % message.encode("utf8"))
 
     def chanmsg(self, channel, message):
         self.split_send(lambda message: self.write("PRIVMSG %s :%s" % (channel, message)), message)
@@ -103,7 +103,7 @@ class IRC(Greenlet):
             self.wallops("anton online")
             buf = ""
             while True:
-                line = self.socket.recv(8192)
+                line = self._socket.recv(8192)
                 if not line:
                     break
 
@@ -121,6 +121,6 @@ class IRC(Greenlet):
 
                     gevent.spawn(self.process_line, j["type"], j.get("data"))
 
-            self.socket = None
+            self._socket = None
             _log.info("disconnected, retrying in 5s...")
             gevent.sleep(5)
