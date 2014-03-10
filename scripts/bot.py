@@ -52,7 +52,8 @@ if __name__ == "__main__":
             sys.exit(1)
         try:
             # this import is necessary to activate all plugins
-            from anton import modules
+            from anton.modules import init_modules
+            init_modules()
             main()
         except Exception as e:
             # give Sentry/Raven a chance to do some logging

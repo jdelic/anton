@@ -47,7 +47,6 @@ anton: I've started a hangout titled "Guys, let's talk". Here's the link: ...
 To be able to do this, anton needs access to a Google Calendar through an OAuth token.
 """
 
-
 CALENDAR_API_SCOPE = "https://www.googleapis.com/auth/calendar"
 TOKEN_URI = "https://accounts.google.com/o/oauth2/token"
 _log = logging.getLogger(__name__)
@@ -59,10 +58,10 @@ _calendar_id = config.GOOGLE_HANGOUT_CALENDAR_ID if hasattr(config, 'GOOGLE_HANG
 _event_length = int(config.GOOGLE_HANGOUT_DEFAULT_LENGTH) if hasattr(config, 'GOOGLE_HANGOUT_DEFAULT_LENGTH') else 60 * 60 * 2
 _configured = False
 
-if not __name__ == "__main__":
+if __name__ != "__main__":
     for k in ['GOOGLE_HANGOUT_REFRESH_TOKEN', 'GOOGLE_HANGOUT_CALENDAR_ID', 'GOOGLE_HANGOUT_CLIENT_SECRET',
               'GOOGLE_HANGOUT_CLIENT_ID']:
-        if not hasattr(config, k):
+        if not hasattr(config, k) or getattr(config, k) is None or getattr(config, k) == "":
             raise Exception("No value for config.%s, no !hangout for you :(" % k)
     # we only have a refresh token... so create credentials with an "expired" access token for later use
     _creds = OAuth2Credentials("", config.GOOGLE_HANGOUT_CLIENT_ID, config.GOOGLE_HANGOUT_CLIENT_SECRET,
@@ -122,7 +121,7 @@ def hangout(callback, msg):
 
 if __name__ == "__main__":
     for k in ['GOOGLE_HANGOUT_CLIENT_SECRET', 'GOOGLE_HANGOUT_CLIENT_ID']:
-        if not hasattr(config, k):
+        if not hasattr(config, k) or getattr(config, k) is None or getattr(config, k) == "":
             print("You need to set the environment variables:")
             print("    GOOGLE_HANGOUT_CLIENT_SECRET")
             print("    GOOGLE_HANGOUT_CLIENT_ID")
