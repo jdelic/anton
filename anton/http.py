@@ -1,9 +1,19 @@
+# -* coding: utf-8 *-
+from functools import wraps
 import logging
 import events
 from anton import config
 
 from gevent.pywsgi import WSGIServer
 
+"""
+This module provides the glue between `events` and functions which handle HTTP connections. HTTP handlers are
+registered through the `@http.register` decorator.
+
+It also includes the GEvent-based HTTP server firing events through `events.fire`. The HTTP server is set up
+in such a way that it provides a reference to Anton's `irc_client` instance in the `context` parameter. This
+allows Anton HTTP handlers to directly talk to the IRC server Anton is connected to.
+"""
 
 _log = logging.getLogger(__name__)
 
@@ -16,6 +26,7 @@ def register_raw(fn):
 
 def register(r):
     def decorate(fn):
+        @wraps(fn)
         def new_fn(context, env):
             path = env["PATH_INFO"]
             if path.startswith(config.HTTP_ROOT):
@@ -57,7 +68,11 @@ def http_handler(type, context, env):
 
 
 def server(irc):
-    # does this run in a greenlet?
+    """
+    The HTTP server greenlet. This function returns a gevent.pywsgi.WSGIServer instance
+    which Anton's main() then runs as the event loop consumer through its serve_forever
+    method.
+    """
     def application(env, start_response):
         response = [None]
 
