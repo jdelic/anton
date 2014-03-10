@@ -1,7 +1,9 @@
 import logging
 from anton import commands
+from anton.scheduler import schedule
 
 _log = logging.getLogger(__name__)
+
 
 @commands.register("!debug")
 def debug(callback, args):
@@ -22,3 +24,15 @@ def debug(callback, args):
         raise Exception("This is a test exception for Anton's exception handling")
 
     return "Use !debug (raise|log) (debug|info|warning|error)"
+
+
+@commands.register("!schedulertest")
+def schedulertest(callback, args):
+    # run every second for 3 seconds
+    @schedule('* * * * * *', 3)
+    def tick(sched, ticks):
+        if not hasattr(sched, 'ticks'):
+            sched.ticks = ticks
+        sched.ticks -= 1
+        callback("tick %s" % sched.ticks)
+        return sched.ticks > 0

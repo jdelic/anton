@@ -8,8 +8,7 @@ import gevent.monkey
 import os
 import logging
 import logging.config
-from anton import http
-
+from anton import http, scheduler
 import anton.config as config
 from anton.irc_client import IRC
 
@@ -22,6 +21,7 @@ gevent.monkey.patch_dns()
 def main():
     irc_instance = IRC()
     http_instance = http.server(irc_instance)
+    scheduler.setup(irc_instance)
     irc_instance.start()
     _log.info("anton listening on %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
     # Run WSGIServer's serve_forever() implementation as a cooperative
