@@ -1,5 +1,6 @@
 # -* coding: utf-8 *-
 from datetime import datetime, timedelta
+import sys
 import json
 import logging
 from apiclient.discovery import build
@@ -120,6 +121,14 @@ def hangout(callback, msg):
 
 
 if __name__ == "__main__":
+    for k in ['GOOGLE_HANGOUT_CLIENT_SECRET', 'GOOGLE_HANGOUT_CLIENT_ID']:
+        if not hasattr(config, k):
+            print("You need to set the environment variables:")
+            print("    GOOGLE_HANGOUT_CLIENT_SECRET")
+            print("    GOOGLE_HANGOUT_CLIENT_ID")
+            print("")
+            sys.exit(1)
+
     print("All config available. This module will now help you create a refresh token.\n")
     print("Contacting Google...")
     resp = requests.post(
