@@ -3,8 +3,10 @@ gevent==1.0
 github3.py==0.8.2
 greenlet==0.4.2
 requests==2.2.1
+requests_oauthlib=0.4.0
 wsgiref==0.1.2
 cssselect==0.9.1
 jira-python>=0.13
 raven==4.0.4
-pycrypto==2.6  # required for jira-python
+pycrypto>=2.6  # required for jira-python
+google-api-python-client==1.2
