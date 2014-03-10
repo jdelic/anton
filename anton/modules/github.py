@@ -21,12 +21,12 @@ def http_handler(env, m, irc):
         message = commit['message']
         message = re.sub(r'\n.*', r'', message)
 
-        output = '{author} pushed a commit to {owner}/{repo_name} ({commit_url}): "{message}"'.format(
+        output = u'{author} pushed a commit to {owner}/{repo_name} ({commit_url}): "{message}"'.format(
             author=commit['author']['name'],
             owner=repository['owner']['name'],
             repo_name=repository['name'],
             commit_url=commit['url'],
             message=message,
-        )
+        ).encode('utf-8')
         irc.chanmsg(config.GITHUB_CHANNEL, output)
     return "application/json", json.dumps(payload)

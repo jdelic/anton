@@ -73,7 +73,7 @@ LOGGING = {
         },
         '': {
             'handlers': ['console', 'sentry'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     }

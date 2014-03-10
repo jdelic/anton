@@ -106,7 +106,7 @@ def client(irc):
 
         _log.info("connected!")
 
-        irc.wallops("holly online")
+        irc.wallops("anton online")
         buf = ""
         while True:
             line = s.recv(8192)

@@ -10,9 +10,6 @@ import logging
 import logging.config
 from anton import http
 
-# this import is necessary to activate all plugins
-from anton import modules
-
 import anton.config as config
 from anton import irc_client as irc
 
@@ -29,7 +26,7 @@ def main():
 
     # Abuse WSGIServer's serve_forever() implementation as a "daemonization
     # kit" that handles signals correctly.
-    _log.info("holly listening at %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
+    _log.info("anton listening on %s:%s" % (config.HTTP_LISTEN[0], config.HTTP_LISTEN[1],))
     http_instance.serve_forever()
 
 
@@ -54,6 +51,8 @@ if __name__ == "__main__":
             _log.error("already running, exiting...", exc_info=True)
             sys.exit(1)
         try:
+            # this import is necessary to activate all plugins
+            from anton import modules
             main()
         except Exception as e:
             # give Sentry/Raven a chance to do some logging
