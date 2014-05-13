@@ -1,5 +1,5 @@
 beautifulsoup4==4.3.2
-gevent==1.0
+gevent==1.0.1
 github3.py==0.8.2
 greenlet==0.4.2
 requests==2.2.1
