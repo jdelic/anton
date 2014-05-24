@@ -7,7 +7,7 @@ requests_oauthlib==0.4.0
 wsgiref==0.1.2
 cssselect==0.9.1
 jira-python>=0.13
-raven==4.2.1
+raven==4.2.3
 pycrypto>=2.6  # required for jira-python
 croniter==0.3.4
 pytz==2014.3
