@@ -1,6 +1,6 @@
 # Anton, the LaterPay IRC bot
 
-Anton is an fork of [Holly](https://bitbucket.org/chrisporter/holly/).
+Anton is a fork of [Holly](https://bitbucket.org/chrisporter/holly/).
 
 Anton currently runs on `anton.laterpay.net`, which is hosted on `irc.laterpay.net`.
 
