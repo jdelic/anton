@@ -2,7 +2,7 @@ beautifulsoup4==4.3.2
 gevent==1.0.1
 github3.py==0.9.1
 greenlet==0.4.3
-requests==2.3.0
+requests==2.4.0
 requests-oauthlib==0.4.1
 wsgiref==0.1.2
 cssselect==0.9.1
