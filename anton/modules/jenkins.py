@@ -10,6 +10,7 @@ Also note that the Notification Plugin docs at the above link (at time of writin
 regarding the JSON data POSTed; the code here (at time of writing) uses what the actual current
 plugin version sends...
 """
+import logging
 
 from anton import http
 import re
@@ -22,9 +23,17 @@ except AttributeError:
     JENKINS_CHANNEL = "#twilightzone"
 
 
+_log = logging.getLogger(__name__)
+
+
 @http.register(re.compile("^/jenkins$"))
 def http_handler(env, m, irc):
-    payload = json.loads(env['wsgi.input'].read())
+    try:
+        input = env['wsgi.input'].read()
+        payload = json.loads(input)
+    except ValueError as e:
+        _log.error("Can't decode input: %s", input, exc_info=True)
+        return
 
     build = payload['build']
     if build['phase'] != 'FINISHED': # No need for STARTED/COMPLETED/other
