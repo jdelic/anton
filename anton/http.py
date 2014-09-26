@@ -4,7 +4,7 @@ import logging
 import events
 from anton import config
 
-from gevent.pywsgi import WSGIServer
+from gevent.pywsgi import WSGIServer, WSGIHandler
 
 """
 This module provides the glue between `events` and functions which handle HTTP connections. HTTP handlers are
@@ -67,6 +67,24 @@ def http_handler(type, context, env):
         context['callback']("An error occured (%s). Please check the log." % e, response_line="500 SERVER ERROR")
 
 
+# Implement some sane logging for gevent.pywsgi so it respects config.logging
+class LoggingWSGIHandler(WSGIHandler):
+    def __init__(self, *args, **kwargs):
+        self.error_logger = _log
+        self.request_logger = logging.getLogger("anton.http.requests")
+        super(LoggingWSGIHandler, self).__init__(*args, **kwargs)
+
+    def log_error(self, msg, *args):
+        self.error_logger.error(msg, *args)
+
+    def log_request(self):
+        self.request_logger.info(self.format_request())
+
+
+class LoggingWSGIServer(WSGIServer):
+    handler_class = LoggingWSGIHandler
+
+
 def server(irc):
     """
     The HTTP server greenlet. This function returns a gevent.pywsgi.WSGIServer instance
@@ -91,6 +109,6 @@ def server(irc):
         start_response("404 File Not Found", [("Content-Type", "text/plain")])
         return "404 File Not Found"
 
-    s = WSGIServer(config.HTTP_LISTEN, application)
+    s = LoggingWSGIServer(config.HTTP_LISTEN, application)
     return s
 

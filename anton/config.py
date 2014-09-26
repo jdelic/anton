@@ -71,6 +71,10 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False
         },
+        'anton.http.requests': {
+            'handlers': ['console'],
+            'propagate': False,
+        },
         '': {
             'handlers': ['console', 'sentry'],
             'level': 'INFO',
