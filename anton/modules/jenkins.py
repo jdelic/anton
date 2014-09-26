@@ -36,7 +36,7 @@ def http_handler(env, m, irc):
         return
 
     build = payload['build']
-    if build['phase'] != 'FINISHED': # No need for STARTED/COMPLETED/other
+    if build['phase'] != 'FINISHED' and build['phase'] != 'FINALIZED':  # No need for STARTED/COMPLETED/other
         return
 
     status = build['status']
