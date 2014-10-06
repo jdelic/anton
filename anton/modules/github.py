@@ -43,6 +43,14 @@ def output_lines(payload):
         ).encode('utf-8')
         lines.append(output)
 
+    if payload['forced']:
+        alert = u'ALERT ALERT ALERT {pusher} **FORCE PUSHED** TO {ref} ON {repo}'.format(
+            pusher=pusher,
+            ref=ref,
+            repo = repo,
+        ).encode('utf-8')
+        lines.append(alert)
+
     return lines
 
 if __name__ == '__main__':
