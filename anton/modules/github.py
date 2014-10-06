@@ -15,18 +15,41 @@ def http_handler(env, m, irc):
     data = urlparse.parse_qs(body)
 
     payload = json.loads(data['payload'][0])
-    repository = payload['repository']
 
-    for commit in payload['commits']:
-        message = commit['message']
-        message = re.sub(r'\n.*', r'', message)
+    lines = output_lines(payload)
 
-        output = u'{author} pushed a commit to {owner}/{repo_name} ({commit_url}): "{message}"'.format(
-            author=commit['author']['name'],
-            owner=repository['owner']['name'],
-            repo_name=repository['name'],
-            commit_url=commit['url'],
-            message=message,
-        ).encode('utf-8')
-        irc.chanmsg(config.GITHUB_CHANNEL, output)
+    for line in lines:
+        irc.chanmsg(config.GITHUB_CHANNEL, line)
+
     return "application/json", json.dumps(payload)
+
+
+def output_lines(payload):
+    lines = []
+
+    pusher = payload['pusher']['name']
+    ref = payload['ref']
+    repo = payload['repository']['full_name']
+
+    if (payload['head_commit']):
+        commits = len(payload['commits'])
+        output = u'{pusher} pushed {commits} commit(s) to {ref} on {repo} ({compare_url}): "{message}"'.format(
+            pusher=pusher,
+            commits=commits,
+            ref=ref,
+            repo=repo,
+            compare_url=payload['compare'],
+            message=payload['head_commit']['message'],
+        ).encode('utf-8')
+        lines.append(output)
+
+    return lines
+
+if __name__ == '__main__':
+    import sys
+
+    with open(sys.argv[1]) as json_file:
+        data = json.load(json_file)
+
+    for line in output_lines(data):
+        print line
