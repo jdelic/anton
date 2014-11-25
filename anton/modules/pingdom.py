@@ -4,6 +4,9 @@ import urlparse
 from anton import http, config
 
 
+class PingdomException(Exception):
+    pass
+
 @http.register(re.compile("^/pingdom/post-receive$"))
 def http_handler(env, m, irc):
 
@@ -15,11 +18,11 @@ def http_handler(env, m, irc):
     body = env['QUERY_STRING']
     data = urlparse.parse_qs(body)
 
-    content_type = {'Content-Type': 'text/plain'}
+    content_type = 'text/plain'
     try:
-        message = json.loads( data['message'][0] )
+        message = json.loads(data['message'][0])
     except ValueError:
-        return 'expecting message query param to be valid json', 400, content_type
+        raise PingdomException("expecting message query param to be valid json")
 
     try:
         check = message['check']
@@ -30,7 +33,7 @@ def http_handler(env, m, irc):
         description = message['description']
         body = '[Pingdom] Check {} is {} - {} (Incident #{}) https://my.pingdom.com/'.format(checkname, description, host, incidentid)
     except KeyError:
-        return 'expecting check, checkname, host, action, incidentid and description keys', 400, content_type
+        raise PingdomException("expecting check, checkname, host, action, incidentid and description keys in json")
 
     output = body.encode('utf-8')
     irc.chanmsg(config.PINGDOM_CHANNEL, output)
