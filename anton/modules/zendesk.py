@@ -27,7 +27,7 @@ def http_handler(env, m, irc):
         ticket_status = message['status']
         ticket_id = message['id']
         ticket_timestamp = message['updated_at']
-        body = '[Zendesk] Status: {} (Ticket #{}) https://laterpay.zendesk.com/agent/tickets/{} - Timestamp: {}'.format(ticket_status, ticket_id, ticket_id, ticket_timestamp)
+        body = u'[Zendesk] Status: {} (Ticket #{}) https://laterpay.zendesk.com/agent/tickets/{} - Timestamp: {}'.format(ticket_status, ticket_id, ticket_id, ticket_timestamp)
     except KeyError:
         raise ZendeskException("expecting status, id, updated_at keys in json")
 
