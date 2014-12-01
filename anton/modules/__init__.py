@@ -14,4 +14,4 @@ def init_modules():
     from anton.modules import github
     from anton.modules import hangouts
     from anton.modules import pandora
-    from anton.modules import pingdom
+    from anton.modules import mailchimp
