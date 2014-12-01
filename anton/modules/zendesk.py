@@ -14,15 +14,9 @@ def http_handler(env, m, irc):
     except ValueError:
         content_length = 0
 
-    body = env['QUERY_STRING']
-    if body == "":
-        return "application/json", body
-
-    print env
-    print body
+    body = env['wsgi.input'].read(content_length)
     data = urlparse.parse_qs(body)
-    print data
-
+    #print data
     content_type = 'text/plain'
     try:
         message = json.loads( data['message'][0] )
@@ -33,7 +27,7 @@ def http_handler(env, m, irc):
         ticket_status = message['status']
         ticket_id = message['id']
         ticket_timestamp = message['updated_at']
-        body = '[Zendesk] {} {} (Ticket #{}) https://laterpay.zendesk.com/agent/tickets/{}'.format(ticket_status, ticket_timestamp, ticket_id)
+        body = '[Zendesk] Status: {} (Ticket #{}) https://laterpay.zendesk.com/agent/tickets/{} - Timestamp: {}'.format(ticket_status, ticket_id, ticket_id, ticket_timestamp)
     except KeyError:
         raise ZendeskException("expecting status, id, updated_at keys in json")
 
