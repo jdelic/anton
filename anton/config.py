@@ -16,6 +16,7 @@ BOT_REALNAME = os.getenv("BOT_REALNAME", "antonia")
 BOT_NICKNAME = os.getenv("BOT_NICKNAME", "antonia")
 BOT_CHANNELS = os.getenv("BOT_CHANNELS", "#twilightzone")
 
+ZENDESK_CHANNEL = os.getenv("ZENDESK_CHANNEL", "#twilightzone")
 JENKINS_CHANNEL = os.getenv("JENKINS_CHANNEL", "#twilightzone")
 
 TICKET_PROVIDER = os.getenv("TICKET_PROVIDER", "")
