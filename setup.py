@@ -1,14 +1,10 @@
-from distutils.core import setup
-from pip.req import parse_requirements
-from setuptools import find_packages
+from setuptools import setup, find_packages
 from distutils.command.install import INSTALL_SCHEMES
+from pip.req import parse_requirements
 
 import time
 _version = "1.0.dev%s" % int(time.time())
 _packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
-
-for scheme in INSTALL_SCHEMES.values():
-    scheme['data'] = scheme['purelib']
 
 reqs_generator = parse_requirements("requirements.txt")
 reqs = [str(r.req) for r in reqs_generator]
