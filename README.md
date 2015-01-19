@@ -33,10 +33,9 @@ Anton supports external modules distributed through pypi by utilizing setuptools
 
 If your installable Python package declares an entry point for "anton.modules.external", Anton will happily initialize your module. Here is a simple example:
 
-`setup.py`
----
 ```python
-# setup.py boilerplate omitted
+""" ./setup.py """
+# ...setup.py boilerplate omitted
 setup(
     name="irc.anton.boink",
     ...,
@@ -48,11 +47,8 @@ setup(
         'anton.external.modules': ['boink = boink:boink',]
     },
 )
-```
 
-`boink/__init__.py`
----
-```python
+""" ./boink/__init__.py """
 # -* coding: utf-8 *-
 
 from anton import commands
