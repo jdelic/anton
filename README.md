@@ -44,17 +44,17 @@ setup(
         'irc.anton',
     ],
     entry_points={
-        'anton.external.modules': ['boink = boink:boink',]
+        'anton.external.modules': ['randomboink = boinkmodule:boinkfunc',]
     },
 )
 
-""" ./boink/__init__.py """
+""" ./boinkmodule/__init__.py """
 # -* coding: utf-8 *-
 
 from anton import commands
 
 @commands.register("!boink")
-def boink(callback, args):
+def boinkfunc(callback, args):
     return "boink"
 ```
 
