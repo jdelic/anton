@@ -37,6 +37,8 @@ GOOGLE_HANGOUT_REFRESH_TOKEN = os.getenv("GOOGLE_HANGOUT_REFRESH_TOKEN", "")
 GOOGLE_HANGOUT_CALENDAR_ID = os.getenv("GOOGLE_HANGOUT_CALENDAR_ID", "primary")
 GOOGLE_HANGOUT_DEFAULT_LENGTH = os.getenv("GOOGLE_HANGOUT_DEFAULT_LENGTH", str(60 * 60 * 2))  # 2 hours in seconds
 
+DISABLED_BUILTINS = [s.strip() for s in os.getenv("DISABLED_BUILTINS", "").split(",") if s.strip() != '']
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
