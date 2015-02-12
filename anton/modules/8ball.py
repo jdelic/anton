@@ -29,7 +29,7 @@ answers = [
 
 @commands.register('!8ball')
 def eightball(callback):
-    return answers[random.randint(0, len(answers) - 1)]
+    return random.choice(answers)
 
 if __name__ == '__main__':
     eightball(print, '!8ball')
