@@ -6,7 +6,6 @@ from anton.util import import_module
 _BUILTIN_MODULES = [
     'learndb',
     'thanks',
-    'urban_dictionary',
     'google',
     'zalgo',
     'slogan',
