@@ -17,6 +17,7 @@ _BUILTIN_MODULES = [
     'github',
     'hangouts',
     'pandora',
+    'eightball',
 ]
 
 
