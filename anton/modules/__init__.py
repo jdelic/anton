@@ -12,6 +12,7 @@ _BUILTIN_MODULES = [
     'title_fetcher',
     'jenkins',
     'huzzah',
+    'spin',
     'tickets',
     'debug',
     'github',
