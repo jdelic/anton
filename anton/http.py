@@ -1,5 +1,5 @@
 # -* coding: utf-8 *-
-from functools import wraps
+import functools
 import logging
 import events
 from anton import config
@@ -20,23 +20,43 @@ _log = logging.getLogger(__name__)
 HANDLERS = []
 
 
-def register_raw(fn):
-    HANDLERS.append(fn)
+def _save_http_handler(handlerfn):
+    HANDLERS.append(handlerfn)
 
 
-def register(r):
-    def decorate(fn):
-        @wraps(fn)
-        def new_fn(context, env):
+def register(url_regex):
+    """
+    Returns a decorator that registers a handler for all URLs called on anton's built-in HTTP
+    server matching ``url_regex``. If anton's HTTP server receives a HTTP request for a URL
+    that matches ``url_regex`` the handler will be called with the following arguments:
+
+    .. code-block:: python
+
+        @http.register(re.compile("^/blah$"))
+        def blah_handler(env, regex_match, irc_instance):
+            pass
+
+      * env is the WSGI environment dictionary
+
+      * regex_match is the result of ``url_regex.match([called URL])`` and can be used to retrieve
+        URL parameters
+
+      * irc_instance is a reference to a connected instance of ``anton.irc_client.IRC`` allowing
+        HTTP handlers to directly perform any IRC action such as sending private messages or posting
+        messages to an IRC channsel.
+    """
+    def decorate(handler):
+        @functools.wraps(handler)
+        def request_handler(context, env):
             path = env["PATH_INFO"]
             if path.startswith(config.HTTP_ROOT):
                 path = path[len(config.HTTP_ROOT):]
 
-            m = r.match(path)
-            if not m:
+            regex_match = url_regex.match(path)
+            if not regex_match:
                 return events.CONTINUE
 
-            result = fn(env, m, context['irc'])
+            result = handler(env, regex_match, context['irc'])
             if result is None:
                 return events.CONTINUE
 
@@ -45,18 +65,18 @@ def register(r):
             except TypeError:
                 content_type, value = "text/plain", result
 
-            callback = context['callback']
-            callback(value, headers=[("Content-Type", content_type)])
+            http_callback = context['callback']
+            http_callback(value, headers=[("Content-Type", content_type)])
             return events.STOP
 
-        register_raw(new_fn)
-        return new_fn
+        _save_http_handler(request_handler)
+        return request_handler
 
     return decorate
 
 
 @events.register("http")
-def http_handler(type, context, env):
+def _http_handler(eventtype, context, env):
     try:
         for handler in HANDLERS:
             r = handler(context, env)
