@@ -48,20 +48,20 @@ def _return_callback(callback, result):
     return events.STOP
 
 
-def _regex_matcher(r):
+def _regex_matcher(regex):
     """
     If @commands.register is called with an instance of a regular expression, then it calls
     this function which returns the actual decorator used. That decorator will match IRC
     messages against the provided regex.
     """
-    def decorate(fn):
-        @functools.wraps(fn)
+    def decorate(handler):
+        @functools.wraps(handler)
         def regex_matching_wrapper(callback, message):
-            m = r.match(message)
-            if not m:
+            match = regex.match(message)
+            if not match:
                 return events.CONTINUE
 
-            return return_callback(callback, fn(callback, m))
+            return return_callback(callback, handler(callback, match))
 
         _save_handler_and_filter(regex_matching_wrapper, _extract_message)
         return regex_matching_wrapper
