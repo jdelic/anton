@@ -28,7 +28,7 @@ def fire(event_type, event_context, event_args):
     """
     Call all handlers registered using @events.register(event_type) for ``event_type`` in a loop
     and pass them arbitrary context and event argument information. The content of these
-    parameters differs depending on the module raising the event. See ``anton.commands`` and
+    parameters differs depending on the module raising the event. See ``anton.irc_client`` and
     ``anton.http`` for more information.
     """
     for handler in EVENTS.get(event_type, []):
