@@ -118,7 +118,7 @@ def _all_matcher():
         def all_matching_wrapper(callback, message):
             return _return_callback(callback, handler(callback, message))
 
-        _save_handler_and_filter(handler, message_filter)
+        _save_handler_and_filter(all_matching_wrapper, _extract_message)
         return all_matching_wrapper
 
     return decorate
