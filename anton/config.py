@@ -5,6 +5,7 @@ import sys
 DATA_PATH = os.getenv("DATA_PATH", "./data/")
 IRC_SERVER = os.getenv("IRC_SERVER", "127.0.0.1")
 IRC_PORT = os.getenv("IRC_PORT", "6667")
+IRC_USESSL = os.getenv("IRC_USESSL", "0")
 BACKEND = IRC_SERVER, int(IRC_PORT)
 HTTP_ROOT = "/bot"
 HTTP_BINDADDRESS = os.getenv("HTTP_BINDADDRESS", "127.0.0.1")
