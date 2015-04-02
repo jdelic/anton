@@ -61,7 +61,7 @@ def _regex_matcher(regex):
             if not match:
                 return events.CONTINUE
 
-            return return_callback(callback, handler(callback, match))
+            return _return_callback(callback, handler(callback, match))
 
         _save_handler_and_filter(regex_matching_wrapper, _extract_message)
         return regex_matching_wrapper
@@ -99,7 +99,7 @@ def _command_matcher(trigger_strings, argument_count=-1):
                 callback("incorrect number of args for command: " + tokens[0])
                 return events.STOP
 
-            return return_callback(callback, handler(callback, *tokens[1:]))
+            return _return_callback(callback, handler(callback, *tokens[1:]))
 
         _save_handler_and_filter(command_matching_wrapper, _extract_message)
         return command_matching_wrapper
@@ -116,7 +116,7 @@ def _all_matcher():
     def decorate(handler):
         @functools.wraps(handler)
         def all_matching_wrapper(callback, message):
-            return return_callback(callback, handler(callback, message))
+            return _return_callback(callback, handler(callback, message))
 
         _save_handler_and_filter(handler, message_filter)
         return all_matching_wrapper
