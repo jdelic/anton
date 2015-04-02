@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 from distutils.command.install import INSTALL_SCHEMES
 from pip.req import parse_requirements
+from pip.download import PipSession
 
 import time
 _version = "1.0.dev%s" % int(time.time())
 _packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
 
-reqs_generator = parse_requirements("requirements.txt")
+reqs_generator = parse_requirements("requirements.txt", session=PipSession())
 reqs = [str(r.req) for r in reqs_generator]
 
 setup(
