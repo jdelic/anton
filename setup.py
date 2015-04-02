@@ -19,4 +19,5 @@ setup(
     version=_version,
     packages=_packages,
     install_requires=reqs,
+    test_suite="anton.tests",
 )
