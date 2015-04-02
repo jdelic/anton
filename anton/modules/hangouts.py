@@ -82,8 +82,6 @@ if __name__ != "__main__":
 
 @commands.register("!hangout")
 def hangout(callback, msg):
-    global _service, _calendar_id, _event_length
-
     events = _service.events()
     now = datetime.now(tz=pytz.UTC)
     try:
