@@ -12,3 +12,4 @@ pycrypto>=2.6  # required for jira-python
 croniter==0.3.5
 pytz==2014.4
 google-api-python-client==1.2
+mock==1.0.1
