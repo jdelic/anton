@@ -1,11 +1,5 @@
-import commands
-from anton import http
-import re
 from anton import config
-import json
-import urlparse
 import github3
-import logging
 from anton.modules.tickets import TicketProvider, TicketProviderErrorResponse
 
 try:
@@ -58,6 +52,7 @@ class GitHubTicketProvider(TicketProvider):
         owner, repo, args = self._get_repo_from_args(args)
 
         output = []
+
         def s(issue_type=None):
             if issue_type is None:
                 open_issues = s('open')
@@ -87,7 +82,8 @@ class GitHubTicketProvider(TicketProvider):
                 continue
             issue = gh.issue(owner, repo, issue_number)
             if issue is None:
-                output.append("No issue found in {owner}/{repo} with number {issue_number}".format(owner=owner, repo=repo, issue_number=issue_number))
+                output.append("No issue found in {owner}/{repo} with number {issue_number}".format(
+                    owner=owner, repo=repo, issue_number=issue_number))
                 continue
             output.append(self._format_issue(issue))
 
