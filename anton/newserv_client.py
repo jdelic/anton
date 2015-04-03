@@ -2,7 +2,6 @@ import socket
 import json
 import events
 import gevent
-import traceback
 import logging
 
 from anton import config
@@ -95,4 +94,3 @@ def client(irc):
         irc.socket = None
         _log.info("disconnected, retrying in 5s...")
         gevent.sleep(5)
-
