@@ -143,14 +143,16 @@ class IRC(gevent.Greenlet):
 
                     gevent.spawn(self.process_line, j["type"], j.get("data"))
 
+            _log.debug("Message count: %s", self.current_messagecount)
             if not self.allow_message_processing():
-                _log.info("Maximum number of messages per connection reached (%s)" % self.max_messages)
+                _log.debug("Maximum number of messages per connection reached (%s)", self.max_messages)
 
             self.current_messagecount = 0
+            self._socket.close()
             self._socket = None
 
             if self.allow_reconnect():
                 _log.info("disconnected, retrying in 5s...")
                 gevent.sleep(5)
 
-        _log.info("Maximum reconnection attempts reached (%s)" % self.max_reconnects)
+        _log.warning("Maximum reconnection attempts reached (%s)", self.max_reconnects)
