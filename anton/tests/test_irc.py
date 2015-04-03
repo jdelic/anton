@@ -2,7 +2,6 @@
 import logging
 
 import re
-import mock
 import unittest
 import socket
 import gevent.monkey
