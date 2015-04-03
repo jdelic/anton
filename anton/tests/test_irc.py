@@ -114,7 +114,7 @@ class TestIRCProtocol(unittest.TestCase):
         reload(socket)
 
     def tearDown(self):
-        commands.COMMANDS = []  # remove each registered commands so they don'r influence other tests
+        commands.COMMANDS = []  # remove all registered commands so they don't influence other tests
 
     def test_parseline_crlf(self):
         ircc = irc_client.IRC()
