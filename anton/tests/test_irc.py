@@ -39,6 +39,10 @@ class TestCommands(unittest.TestCase):
         handler(self._testcallback, u"!wibble stink")
         self.assertNotEqual(self._returned, u"stink")
 
+        handler = commands.register("%single")(testhandler)
+        handler(self._testcallback, "%single string")
+        self.assertEqual(self._returned, "string")
+
     def test_all_matcher(self):
         def testhandler(callback, arg):
             return "boink%s" % arg
