@@ -2,7 +2,6 @@
 import logging
 
 import re
-import mock
 import unittest
 import socket
 import gevent.monkey
@@ -184,4 +183,3 @@ class TestIRCProtocol(unittest.TestCase):
         gevent.wait(timeout=2)
         self.assertTrue(ircs.message_received)
         self.assertEqual(ircs.received[-1], "NOTICE TheFonz :thumbsup\r\n")
-
