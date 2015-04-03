@@ -35,4 +35,3 @@ if __name__ == '__main__':
     eightball(print, '!8ball')
     eightball(print, '!8ball')
     eightball(print, '!8ball')
-
