@@ -1,6 +1,5 @@
 import logging
 import socket
-from gevent.greenlet import Greenlet
 import events
 import gevent
 
@@ -11,10 +10,19 @@ from anton import config
 _log = logging.getLogger(__name__)
 
 
-class IRC(Greenlet):
-    def __init__(self):
+class IRC(gevent.Greenlet):
+    def __init__(self, max_reconnects=0, max_messages=0):
+        """
+        :param max_reconnects: number of reconnection attempts (0 means unlimited [default])
+        :param max_messages:  number of messages to process per connection attempt (0 means unlimited [default])
+        :return:
+        """
         super(IRC, self).__init__()
         self._socket = None
+        self.max_reconnects = max_reconnects
+        self.max_messages = max_messages
+        self.current_reconnects = 0
+        self.current_messagecount = 0
 
     def connect(self, addr):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,7 +60,7 @@ class IRC(Greenlet):
 
     @staticmethod
     def parse_line(s):
-        s = s[:-1]
+        s = s.rstrip("\r\n")
         prefix = ""
         if not s:
             raise Exception("Empty line.")
@@ -94,15 +102,29 @@ class IRC(Greenlet):
         else:
             _log.warning("bad command type: %r: %r" % (type, obj))
 
+    def allow_reconnect(self):
+        if self.max_reconnects == 0:
+            return True
+        else:
+            return self.current_reconnects < self.max_reconnects
+
+    def allow_message_processing(self):
+        if self.max_messages == 0:
+            return True
+        else:
+            return self.current_messagecount < self.max_messages
+
     def _run(self):
-        while True:
-            _log.info("connecting...")
+        while self.allow_reconnect():
+            self.current_reconnects = self.current_reconnects + 1
+            _log.info("connecting to %s:%s..." % config.BACKEND)
             self.connect(config.BACKEND)
             _log.info("connected!")
 
             self.wallops("anton online")
             buf = ""
-            while True:
+            while self.allow_message_processing():
+                self.current_messagecount = self.current_messagecount + 1
                 line = self._socket.recv(8192)
                 if not line:
                     break
@@ -121,6 +143,14 @@ class IRC(Greenlet):
 
                     gevent.spawn(self.process_line, j["type"], j.get("data"))
 
+            if not self.allow_message_processing():
+                _log.info("Maximum number of messages per connection reached (%s)" % self.max_messages)
+
+            self.current_messagecount = 0
             self._socket = None
-            _log.info("disconnected, retrying in 5s...")
-            gevent.sleep(5)
+
+            if self.allow_reconnect():
+                _log.info("disconnected, retrying in 5s...")
+                gevent.sleep(5)
+
+        _log.info("Maximum reconnection attempts reached (%s)" % self.max_reconnects)
