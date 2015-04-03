@@ -3,7 +3,7 @@
 import re
 import mock
 import unittest
-from anton import commands, events, irc_client
+from anton import commands, irc_client
 
 
 class TestCommands(unittest.TestCase):
