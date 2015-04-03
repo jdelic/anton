@@ -6,7 +6,7 @@ import logging
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from httplib2 import Http
-from oauth2client.client import OAuth2Credentials, AccessTokenRefreshError
+from oauth2client.client import OAuth2Credentials
 import pytz
 import requests
 import time
@@ -106,7 +106,7 @@ def hangout(callback, msg):
                 }
             }
         ).execute()
-    except Exception as e:
+    except Exception:
         _log.error("Couldn't insert event '[Anton] Google Hangout: %s'", msg, exc_info=True)
         return "Computer says 'No' :(. Try again."
 
