@@ -62,32 +62,34 @@ class TestCommands(unittest.TestCase):
 
 
 class TestIRCServer(gevent.server.StreamServer):
-    def __init__(self, *args, **kwargs):
-        super(TestIRCServer, self).__init__(*args, **kwargs)
-        self.max_receive = kwargs.get("max_receive", 1)
+    def __init__(self, checkfor, *args, **kwargs):
         self.received = []
         self._message = ""
+        self.checkfor = checkfor
+        self.message_received = False
+        super(TestIRCServer, self).__init__(*args, **kwargs)
 
     def handle(self, sock, address):
         gevent.spawn(self.read, sock)
         gevent.spawn(self.write, sock)
 
     def read(self, sock):
-        recv_messagecount = 0
-        while recv_messagecount < self.max_receive:
-            recv_messagecount = recv_messagecount + 1
-            _log.debug("wait server %s", sock)
-            line = sock.recv(8192)
+        filelike = sock.makefile()
+        while True:
+            line = filelike.readline()
             if line:
+                _log.debug("Server received %s", line)
                 self.received.append(line)
-                _log.debug("server received: %s", line)
-            else:
-                break
+                if self.checkfor in line:
+                    self.message_received = True
+                    self.close()
+                    break
 
-    def write(self, socket):
-        if self._message:
-            socket.sendall(self._message)
-            self._message = ""
+    def write(self, sock):
+        while not self._message:
+            gevent.sleep(0)
+        sock.send(self._message)
+        self._message = ""
 
     def queuemessage(self, msg):
         self._message = msg
@@ -112,25 +114,12 @@ class TestIRCProtocol(unittest.TestCase):
         # remove monkey patching
         reload(socket)
 
-    def setUp(self):
-        self.irc_server = TestIRCServer(('127.0.0.1', 0))
-        self.irc_server.start()
-        self.irc_client = irc_client.IRC(max_reconnects=1, max_messages=1)
-
-        import anton
-        anton.config.BACKEND = ("127.0.0.1", self.irc_server.server_port)
-
-        self.irc_client.chanmsg = mock.Mock()
-        self.irc_client.privnotice = mock.Mock()
-        self.irc_client.start()
-
     def tearDown(self):
         commands.COMMANDS = []  # remove each registered commands so they don'r influence other tests
-        self.irc_client.kill()
-        self.irc_server.stop()
 
     def test_parseline_crlf(self):
-        x = self.irc_client.parse_line(TestIRCProtocol.chanmsg)
+        ircc = irc_client.IRC()
+        x = ircc.parse_line(TestIRCProtocol.chanmsg)
         self.assertDictEqual(x, {
             "type": "PRIVMSG",
             "data": {
@@ -140,7 +129,8 @@ class TestIRCProtocol(unittest.TestCase):
         })
 
     def test_parseline_lf(self):
-        x = self.irc_client.parse_line(TestIRCProtocol.chanmsg.rstrip("\r\n") + "\n")
+        ircc = irc_client.IRC()
+        x = ircc.parse_line(TestIRCProtocol.chanmsg.rstrip("\r\n") + "\n")
         self.assertDictEqual(x, {
             "type": "PRIVMSG",
             "data": {
@@ -149,20 +139,37 @@ class TestIRCProtocol(unittest.TestCase):
             }
         })
 
+    @staticmethod
+    def setup_irctest(check_for_string_sent, max_reconnects=0, max_messages=0):
+        ircserver = TestIRCServer(check_for_string_sent, ('127.0.0.1', 0))
+        ircserver.start()
+        ircclient = irc_client.IRC(max_reconnects=max_reconnects, max_messages=max_messages)
+
+        import anton
+        anton.config.BACKEND = ("127.0.0.1", ircserver.server_port)
+        ircclient.start()
+        return ircserver, ircclient
+
     def test_chanmsg(self):
+        ircs, ircc = TestIRCProtocol.setup_irctest("thumbsup", 1, 3)
+
         @commands.register("Eeey!")
         def testhandler(callback):
             return "thumbsup"
 
-        self.irc_server.queuemessage(TestIRCProtocol.chanmsg)
-        self.irc_client.join()
-        self.irc_client.chanmsg.assert_called_once_with("#test", "thumbsup")
+        ircs.queuemessage(TestIRCProtocol.chanmsg)
+        gevent.wait(timeout=2)
+        self.assertTrue(ircs.message_received)
+        self.assertEqual(ircs.received[-1], "PRIVMSG #test :thumbsup\r\n")
 
     def test_privmsg(self):
+        ircs, ircc = TestIRCProtocol.setup_irctest("thumbsup", 1, 3)
+
         @commands.register("Eeey!")
         def testhandler(callback):
-            return "thumbsup"
+            return "thumbsdown"
 
-        self.irc_server.queuemessage(TestIRCProtocol.privmsg)
-        self.irc_client.join()
-        self.irc_client.privnotice.assert_called_once_with("TheFonz", "thumbsup")
+        ircs.queuemessage(TestIRCProtocol.privmsg)
+        gevent.wait(timeout=2)
+        self.assertTrue(ircs.message_received)
+        self.assertEqual(ircs.received[-1], "NOTICE TheFonz :thumbsup\r\n")
