@@ -5,5 +5,6 @@ holly.log
 .idea
 *.iml
 *.egg-info
+*.egg
 /.tox
 
