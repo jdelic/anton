@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from distutils.command.install import INSTALL_SCHEMES
 from pip.req import parse_requirements
 from pip.download import PipSession
 
