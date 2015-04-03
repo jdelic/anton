@@ -75,7 +75,8 @@ class DB(object):
 
 
 class LowercaseDB(DB):
-    def __init__(self, *args, **kwargs): super(LowercaseDB, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(LowercaseDB, self).__init__(*args, **kwargs)
 
     def __t(self, key):
         return key.lower()
