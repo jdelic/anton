@@ -17,7 +17,6 @@ _BUILTIN_MODULES = [
     'debug',
     'github',
     'hangouts',
-    'pandora',
     'eightball',
 ]
 
