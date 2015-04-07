@@ -1,5 +1,6 @@
 import logging
 import socket
+import ssl
 import events
 import gevent
 
@@ -26,7 +27,13 @@ class IRC(gevent.Greenlet):
 
     def connect(self, addr):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if config.IRC_USESSL in ["yes", "true", "1"]:
+            self._socket = ssl.wrap_socket(self._socket)
+
         self._socket.connect(addr)
+        if config.BOT_PASSWORD:
+            self._socket.send("PASS %s\r\n" % config.BOT_PASSWORD)
+
         self._socket.send("USER %s %s %s :%s\r\n" % (config.BOT_USERNAME, "wibble", "wibble", config.BOT_REALNAME))
         self._socket.send("NICK %s\r\n" % config.BOT_NICKNAME)
         return True
