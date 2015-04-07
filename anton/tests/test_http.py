@@ -3,6 +3,7 @@ import re
 import socket
 import unittest
 import gevent.monkey
+import mock
 import requests
 from .test_irc import TestIRCServer
 from anton import http, irc_client
@@ -23,6 +24,9 @@ class TestHTTPConnector(unittest.TestCase):
     def tearDownClass(cls):
         # remove monkey patching
         reload(socket)
+
+    def tearDown(self):
+        http.HANDLERS = []  # remove all registered handlers so they don't influence other tests
 
     def test_http_hook(self):
         @http.register(re.compile("^/thumbsup$"))
@@ -45,4 +49,31 @@ class TestHTTPConnector(unittest.TestCase):
         self.assertTrue(ircserver.message_received)
         self.assertEqual(ircserver.received[-1], "PRIVMSG #test :Eeey!\r\n")
         self.assertEqual(result.text, "Success")
+        self.assertEqual(result.headers['Content-type'], "text/plain")
+
+    def test_http_404(self):
+        @http.register(re.compile("^/thumbsdown$"))
+        def httptest(wsgi_env, regex_match, irc_client_instance):
+            return "text/plain", "wat?!"
+
+        import anton
+        anton.config.HTTP_LISTEN = "127.0.0.1", 0
+        ircclient = mock.Mock()
+        http_server = http.server(ircclient)
+        http_server.start()
+        result = requests.get("http://127.0.0.1:%s/thumbsup" % http_server.server_port)
+        self.assertEqual(result.status_code, 404)
+
+    def test_http_autocontenttype(self):
+        @http.register(re.compile("^/thumbsup$"))
+        def httptest(wsgi_env, regex_match, irc_client_instance):
+            return "Eeey!"
+
+        import anton
+        anton.config.HTTP_LISTEN = "127.0.0.1", 0
+        ircclient = mock.Mock()
+        http_server = http.server(ircclient)
+        http_server.start()
+        result = requests.get("http://127.0.0.1:%s/thumbsup" % http_server.server_port)
+        self.assertEqual(result.text, "Eeey!")
         self.assertEqual(result.headers['Content-type'], "text/plain")
