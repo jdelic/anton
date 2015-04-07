@@ -5,6 +5,7 @@ import sys
 DATA_PATH = os.getenv("DATA_PATH", "./data/")
 IRC_SERVER = os.getenv("IRC_SERVER", "127.0.0.1")
 IRC_PORT = os.getenv("IRC_PORT", "6667")
+IRC_USESSL = os.getenv("IRC_USESSL", "0")
 BACKEND = IRC_SERVER, int(IRC_PORT)
 HTTP_ROOT = "/bot"
 HTTP_BINDADDRESS = os.getenv("HTTP_BINDADDRESS", "127.0.0.1")
@@ -12,6 +13,7 @@ HTTP_PORT = os.getenv("HTTP_PORT", "8000")
 HTTP_LISTEN = HTTP_BINDADDRESS, int(HTTP_PORT)
 
 BOT_USERNAME = os.getenv("BOT_USERNAME", "antonia")
+BOT_PASSWORD = os.getenv("BOT_PASSWORD", "")
 BOT_REALNAME = os.getenv("BOT_REALNAME", "antonia")
 BOT_NICKNAME = os.getenv("BOT_NICKNAME", "antonia")
 BOT_CHANNELS = os.getenv("BOT_CHANNELS", "#twilightzone")
