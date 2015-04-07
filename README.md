@@ -31,7 +31,7 @@ Here is an example config:
 
 Anton supports external modules distributed through pypi by utilizing setuptools `entry_point` functionality.
 
-If your installable Python package declares an entry point for "anton.modules.external", Anton will happily initialize your module. Here is a simple example:
+If your installable Python package declares an entry point for "anton.modules.external", Anton will happily import your module. Here is a simple example:
 
 ```python
 """ ./setup.py """
@@ -44,7 +44,7 @@ setup(
         'irc.anton',
     ],
     entry_points={
-        'anton.external.modules': ['randomboink = boinkmodule:boinkfunc',]
+        'anton.external.modules': ['randomboink = boinkmodule',]
     },
 )
 
