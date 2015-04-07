@@ -92,18 +92,18 @@ class IRC(gevent.Greenlet):
         }
         return source
 
-    def process_line(self, type, obj):
-        if type == "PING":
+    def process_line(self, msgtype, obj):
+        if msgtype == "PING":
             self.write("PONG " + obj["args"][0])
-        elif type == "PRIVMSG":
+        elif msgtype == "PRIVMSG":
             source = self.to_source(obj["prefix"])
             if obj["args"][0][0] == "#":
                 events.fire("chanmsg", self, {"source": source, "channel": obj["args"][0], "message": obj["args"][1]})
             else:
                 events.fire("privmsg", self, {"source": source, "message": obj["args"][1]})
-        elif type == "JOIN":
+        elif msgtype == "JOIN":
             events.fire("join", self, {"source": self.to_source(obj["prefix"]), "channel": obj["args"][0]})
-        elif type == "001":
+        elif msgtype == "001":
             for channel in config.BOT_CHANNELS.split(','):
                 self.write("JOIN %s" % channel.strip())
         else:

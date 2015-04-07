@@ -88,6 +88,7 @@ class TestIRCServer(gevent.server.StreamServer):
         while not self._message:
             gevent.sleep(0)
         sock.send(self._message)
+        _log.debug("Server sent %s", self._message)
         self._message = ""
 
     def queuemessage(self, msg):
@@ -183,3 +184,11 @@ class TestIRCProtocol(unittest.TestCase):
         gevent.wait(timeout=2)
         self.assertTrue(ircs.message_received)
         self.assertEqual(ircs.received[-1], "NOTICE TheFonz :thumbsup\r\n")
+
+    def test_ping(self):
+        ircs, ircc = TestIRCProtocol.setup_irctest("PONG ramalamadingdong", 1, 3)
+
+        ircs.queuemessage(": PING :ramalamadingdong\r\n")
+        gevent.wait(timeout=2)
+        self.assertTrue(ircs.message_received)
+        self.assertEqual(ircs.received[-1], "PONG ramalamadingdong\r\n")
