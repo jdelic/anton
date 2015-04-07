@@ -114,7 +114,10 @@ def server(irc):
     def application(env, start_response):
         response = [None]
 
-        def callback(data, response_line="200 OK", headers=[("Content-Type", "text/plain")]):
+        def callback(data, response_line="200 OK", headers=None):
+            if headers is None:
+                headers = [("Content-Type", "text/plain")]
+
             if response[0] is None:
                 response[0] = data
             else:

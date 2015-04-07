@@ -78,8 +78,9 @@ def data_file(value):
     return os.path.join(config.DATA_PATH, value)
 
 
-def utf8_iso8859_1(data, table=dict((x, x.decode("iso-8859-1")) for x in map(chr, range(0, 256)))):
-    return table.get(data.object[data.start]), data.start + 1
+_utf8_iso8859_l_table = dict((x, x.decode("iso-8859-1")) for x in map(chr, range(0, 256)))
+def utf8_iso8859_1(data):
+    return _utf8_iso8859_l_table.get(data.object[data.start]), data.start + 1
 
 codecs.register_error("mixed-iso-8859-1", utf8_iso8859_1)
 
