@@ -16,7 +16,7 @@ def split_lines(data, **kwargs):
 def import_module(modulename):
     try:
         __import__(modulename)
-    except ImportError as e:
+    except ImportError:
         raise
 
     return sys.modules[modulename]
@@ -79,6 +79,8 @@ def data_file(value):
 
 
 _utf8_iso8859_l_table = dict((x, x.decode("iso-8859-1")) for x in map(chr, range(0, 256)))
+
+
 def utf8_iso8859_1(data):
     return _utf8_iso8859_l_table.get(data.object[data.start]), data.start + 1
 
@@ -106,6 +108,7 @@ def strip_html(x):
 
 
 WHITESPACE_RE = re.compile("[ \n\t]+")
+
+
 def tidy_whitespace(x):
     return WHITESPACE_RE.sub(" ", x)
-

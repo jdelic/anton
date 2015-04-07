@@ -7,8 +7,8 @@ def zalgo_cmd(callback, message):
     return zalgo(message)
 
 # data set of leet unicode chars
-#---------------------------------------------------
-#those go UP
+# ---------------------------------------------------
+# those go UP
 zalgo_up = [
     u"\u030d", u"\u030e", u"\u0304", u"\u0305",
     u"\u033f", u"\u0311", u"\u0306", u"\u0310",
@@ -23,9 +23,9 @@ zalgo_up = [
     u"\u036a", u"\u036b", u"\u036c", u"\u036d",
     u"\u036e", u"\u036f", u"\u033e", u"\u035b",
     u"\u0346", u"\u031a"
-];
+]
 
-#those go DOWN
+# those go DOWN
 zalgo_down = [
     u"\u0316", u"\u0317", u"\u0318", u"\u0319",
     u"\u031c", u"\u031d", u"\u031e", u"\u031f",
@@ -37,9 +37,9 @@ zalgo_down = [
     u"\u0347", u"\u0348", u"\u0349", u"\u034d",
     u"\u034e", u"\u0353", u"\u0354", u"\u0355",
     u"\u0356", u"\u0359", u"\u035a", u"\u0323"
-];
+]
 
-#those always stay in the middle
+# those always stay in the middle
 zalgo_mid = [
     u"\u0315", u"\u031b", u"\u0340", u"\u0341",
     u"\u0358", u"\u0321", u"\u0322", u"\u0327",
@@ -47,7 +47,7 @@ zalgo_mid = [
     u"\u034f", u"\u035c", u"\u035d", u"\u035e",
     u"\u035f", u"\u0360", u"\u0362", u"\u0338",
     u"\u0337", u"\u0361", u"\u0489"
-];
+]
 
 
 def is_zalgo_char(c):
@@ -90,6 +90,4 @@ def zalgo(text, mode=0, up=True, mid=True, down=True):
 
 if __name__ == "__main__":
     import sys
-
     print zalgo(sys.argv[1], mode=2)
-

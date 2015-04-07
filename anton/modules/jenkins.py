@@ -31,7 +31,7 @@ def http_handler(env, m, irc):
     try:
         input = env['wsgi.input'].read()
         payload = json.loads(input)
-    except ValueError as e:
+    except ValueError:
         _log.error("Can't decode input: %s", input, exc_info=True)
         return
 

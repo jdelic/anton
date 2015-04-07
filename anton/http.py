@@ -134,4 +134,3 @@ def server(irc):
 
     s = LoggingWSGIServer(config.HTTP_LISTEN, application)
     return s
-

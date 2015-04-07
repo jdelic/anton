@@ -38,7 +38,7 @@ def add(callback, key, value):
 
 @commands.register("--")
 def remove(callback, key):
-    if not key in DB:
+    if key not in DB:
         return "doesn't exist!"
 
     del DB[key]
@@ -78,7 +78,7 @@ def query_bot(callback, key):
         value = lookup(key)
     except KeyError:
         return events.CONTINUE
-    except LookupException, e:
+    except LookupException:
         return events.CONTINUE
 
     return value
