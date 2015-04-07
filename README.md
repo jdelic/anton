@@ -27,6 +27,40 @@ Here is an example config:
         GITHUB_AUTH_TOKEN="[create an auth token]"
         ...
 
+## Extending Anton
+
+Anton supports external modules distributed through pypi by utilizing setuptools `entry_point` functionality.
+
+If your installable Python package declares an entry point for "anton.modules.external", Anton will happily import your module. Here is a simple example:
+
+```python
+""" ./setup.py """
+# ...setup.py boilerplate omitted
+setup(
+    name="irc.anton.boink",
+    ...,
+    packages=['boink'],
+    install_requires=[
+        'irc.anton',
+    ],
+    entry_points={
+        'anton.external.modules': ['randomboink = boinkmodule',]
+    },
+)
+
+""" ./boinkmodule/__init__.py """
+# -* coding: utf-8 *-
+
+from anton import commands
+
+@commands.register("!boink")
+def boinkfunc(callback, args):
+    return "boink"
+```
+
+The above creates an external module that, when installed into a virtualenv with Anton itself,
+will be automatically loaded and register the `!boink` command.
+
 ## List of Anton configuration variables
 
 Variable | Description
@@ -42,6 +76,7 @@ BOT_REALNAME | The bot's IRC real name (Default: "anton")
 BOT_NICKNAME | The bot's IRC nickname (Default: "antonia")
 BOT_CHANNELS | A comma-separated list of channels the bot should connect to. (Default: "#twilightzone")
 SENTRY_DSN | An optional DSN that will connect Anton's error handling to a Sentry instance
+DISABLE_BUILTINS | A comma-separated list of built-in functionality that anton should not load on startup (e.g. "hangouts,urban_dictionary," will disable the "!hangout" and "!ud" command
 
 ## List of Anton module configuration variables
 

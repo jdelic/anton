@@ -74,7 +74,7 @@ if __name__ != "__main__":
     try:
         c = _service.calendars().get(calendarId=_calendar_id).execute()
     except HttpError as e:
-        _log.error("The calendar %s seems to be unavailable" % config.GOOGLE_HANGOUT_CALENDAR_ID,
+        _log.error("The calendar %s seems to be unavailable", config.GOOGLE_HANGOUT_CALENDAR_ID,
                    exc_info=True)
     else:
         _configured = True
@@ -82,8 +82,6 @@ if __name__ != "__main__":
 
 @commands.register("!hangout")
 def hangout(callback, msg):
-    global _service, _calendar_id, _event_length
-
     events = _service.events()
     now = datetime.now(tz=pytz.UTC)
     try:
@@ -109,7 +107,7 @@ def hangout(callback, msg):
             }
         ).execute()
     except Exception as e:
-        _log.error("Couldn't insert event '[Anton] Google Hangout: %s'" % msg, exc_info=True)
+        _log.error("Couldn't insert event '[Anton] Google Hangout: %s'", msg, exc_info=True)
         return "Computer says 'No' :(. Try again."
 
     if "hangoutLink" not in ev:

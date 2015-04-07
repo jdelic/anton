@@ -19,7 +19,10 @@ gevent.monkey.patch_dns()
 
 
 def main():
-    irc_instance = IRC()
+    irc_instance = IRC(
+        max_reconnects=int(config.IRC_MAX_CONNECTATTEMPTS),
+        max_messages=int(config.IRC_MAX_MESSAGESPERCONNECTION)
+    )
     http_instance = http.server(irc_instance)
     scheduler.setup(irc_instance)
     irc_instance.start()
