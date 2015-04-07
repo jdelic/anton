@@ -23,6 +23,9 @@ class IRC(Greenlet):
             self._socket = ssl.wrap_socket(self._socket)
 
         self._socket.connect(addr)
+        if config.BOT_PASSWORD:
+            self._socket.send("PASS %s\r\n" % config.BOT_PASSWORD)
+
         self._socket.send("USER %s %s %s :%s\r\n" % (config.BOT_USERNAME, "wibble", "wibble", config.BOT_REALNAME))
         self._socket.send("NICK %s\r\n" % config.BOT_NICKNAME)
         return True

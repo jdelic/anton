@@ -13,6 +13,7 @@ HTTP_PORT = os.getenv("HTTP_PORT", "8000")
 HTTP_LISTEN = HTTP_BINDADDRESS, int(HTTP_PORT)
 
 BOT_USERNAME = os.getenv("BOT_USERNAME", "antonia")
+BOT_PASSWORD = os.getenv("BOT_PASSWORD", "")
 BOT_REALNAME = os.getenv("BOT_REALNAME", "antonia")
 BOT_NICKNAME = os.getenv("BOT_NICKNAME", "antonia")
 BOT_CHANNELS = os.getenv("BOT_CHANNELS", "#twilightzone")
