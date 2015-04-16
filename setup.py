@@ -15,7 +15,6 @@ test_reqs = [str(r.req) for r in test_reqs_generator]
 
 setup(
     name='irc.anton',
-    data_files=[('', ['package.yaml', 'requirements.txt', 'Procfile', 'README.md']), ],
     scripts=[
         'scripts/bot.py',
         'scripts/run'
