@@ -205,5 +205,15 @@ class TestIRCClient(unittest.TestCase):
             ircs.close()
 
         gevent.spawn(killafter1second)
-        gevent.wait(timeout=2)
-        self.assertTrue(ircc.stopped)
+        gevent.sleep(1)
+        try:
+            ircc.reader_greenlet.get(timeout=2)
+        except gevent.Timeout:
+            self.fail("The reader greenlet hasn't closed shop after the stop event")
+
+        try:
+            ircc.writer_greenlet.get(timeout=2)
+        except gevent.Timeout:
+            self.fail("The writer greenlet hasn't closed shop after the stop event")
+
+        gevent.wait(timeout=2) # if anything else blocks, we find it here
