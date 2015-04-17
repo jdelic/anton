@@ -216,4 +216,4 @@ class TestIRCClient(unittest.TestCase):
         except gevent.Timeout:
             self.fail("The writer greenlet hasn't closed shop after the stop event")
 
-        gevent.wait(timeout=2) # if anything else blocks, we find it here
+        gevent.wait(timeout=2)  # if anything else blocks, we find it here
