@@ -210,7 +210,7 @@ class IRC(object):
         def _watcher():
             while self.allow_reconnect():
                 self.current_reconnects = self.current_reconnects + 1
-                _log.info("connecting to %s:%s...", config.BACKEND)
+                _log.info("connecting to %s:%s...", config.BACKEND[0], config.BACKEND[1])
                 self.connect(config.BACKEND)
                 _log.info("connected!")
 
