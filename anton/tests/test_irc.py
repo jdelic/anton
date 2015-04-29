@@ -196,6 +196,14 @@ class TestIRCClient(unittest.TestCase):
         self.assertTrue(ircs.message_received)
         self.assertEqual(ircs.received[-1], "NOTICE TheFonz :thumbsup\r\n")
 
+    def test_ping(self):
+        ircs, ircc = TestIRCClient.setup_irctest("PONG ramalamadingdong", 1, 3)
+
+        ircs.queuemessage(": PING :ramalamadingdong\r\n")
+        gevent.wait(timeout=2)
+        self.assertTrue(ircs.message_received)
+        self.assertEqual(ircs.received[-1], "PONG ramalamadingdong\r\n")
+
     def test_events(self):
         ircs, ircc = TestIRCClient.setup_irctest("thumbsup", 1, 3)
 
