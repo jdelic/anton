@@ -152,10 +152,17 @@ class IRC(object):
 
     @staticmethod
     def to_source(prefix):
+        ident = ""
+        hostname = ""
+        if "@" in prefix and "!" in prefix:
+            ident = prefix.split("@")[0].split("!")[1]
+        if "@" in prefix:
+            hostname = prefix.split("@")[1]
+
         source = {
             "nick": prefix.split("!")[0],
-            "ident": prefix.split("@")[0].split("!")[1],
-            "hostname": prefix.split("@")[1]
+            "ident": ident,
+            "hostname": hostname
         }
         return source
 

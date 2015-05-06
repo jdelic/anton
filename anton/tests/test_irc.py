@@ -130,6 +130,21 @@ class TestIRCProtocol(unittest.TestCase):
             }
         })
 
+    def test_to_source(self):
+        ircc = irc_client.IRC()
+        source = ircc.to_source("nick!ident@host")
+        self.assertDictEqual(source, {
+            "nick": "nick",
+            "ident": "ident",
+            "hostname": "host",
+        })
+        source = ircc.to_source("slackbot")
+        self.assertDictEqual(source, {
+            "nick": "slackbot",
+            "ident": "",
+            "hostname": "",
+        })
+
 
 class TestIRCClient(unittest.TestCase):
     """
