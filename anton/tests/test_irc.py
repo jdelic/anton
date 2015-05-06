@@ -4,6 +4,7 @@ import logging
 import re
 import unittest
 import socket
+import anton.config
 import gevent.monkey
 import gevent.server
 import gevent.queue
@@ -147,22 +148,35 @@ class TestIRCClient(unittest.TestCase):
         # remove monkey patching
         reload(socket)
 
-    @staticmethod
-    def setup_irctest(check_for_string_sent, max_reconnects=0, max_messages=0):
-        ircserver = TestIRCServer(check_for_string_sent, ('127.0.0.1', 0))
-        ircserver.start()
-        ircclient = irc_client.IRC(max_reconnects=max_reconnects, max_messages=max_messages)
+    def setup_irctest(self, check_for_string_sent, max_reconnects=0, max_messages=0):
+        self.ircserver = TestIRCServer(check_for_string_sent, ('127.0.0.1', 0))
+        self.ircserver.start()
+        self.ircclient = irc_client.IRC(max_reconnects=max_reconnects, max_messages=max_messages)
 
-        import anton
-        anton.config.BACKEND = ("127.0.0.1", ircserver.server_port)
-        ircclient.start()
-        return ircserver, ircclient
+        anton.config.BACKEND = ("127.0.0.1", self.ircserver.server_port)
+        self.ircclient.start()
+        return self.ircserver, self.ircclient
 
     def tearDown(self):
         commands.COMMANDS = []  # remove all registered commands so they don't influence other tests
 
+        reload(anton.config)
+
+        # make sure that we don't leave Greenlets hanging around. We first shut them down and then we wait
+        # for them to end. This will ensure that all threads have properly ended before running the next
+        # unittest.
+        if hasattr(self, "ircserver") and not self.ircserver.closed:
+            _log.debug("Shutting down test server %s", self.ircserver)
+            self.ircserver.close()
+        if hasattr(self, "ircclient") and not self.ircclient.stopped:
+            _log.debug("Shutting down test client %s", self.ircclient)
+            self.ircclient.stop()
+
+        if not gevent.wait(timeout=5):
+            raise Exception("TestIRCClient left hanging Greenlets.")
+
     def test_the_network_test(self):
-        ircs, ircc = TestIRCClient.setup_irctest("thumbsup", 1, 3)
+        ircs, ircc = self.setup_irctest("thumbsup", 1, 3)
 
         @commands.register("Eeey!")
         def testhandler(callback):
@@ -173,7 +187,7 @@ class TestIRCClient(unittest.TestCase):
         self.assertFalse(ircs.message_received)
 
     def test_chanmsg(self):
-        ircs, ircc = TestIRCClient.setup_irctest("thumbsup", 1, 3)
+        ircs, ircc = self.setup_irctest("thumbsup", 1, 3)
 
         @commands.register("Eeey!")
         def testhandler(callback):
@@ -185,7 +199,7 @@ class TestIRCClient(unittest.TestCase):
         self.assertEqual(ircs.received[-1], "PRIVMSG #test :thumbsup\r\n")
 
     def test_privmsg(self):
-        ircs, ircc = TestIRCClient.setup_irctest("thumbsup", 1, 3)
+        ircs, ircc = self.setup_irctest("thumbsup", 1, 3)
 
         @commands.register("Eeey!")
         def testhandler(callback):
@@ -197,7 +211,7 @@ class TestIRCClient(unittest.TestCase):
         self.assertEqual(ircs.received[-1], "NOTICE TheFonz :thumbsup\r\n")
 
     def test_ping(self):
-        ircs, ircc = TestIRCClient.setup_irctest("PONG ramalamadingdong", 1, 3)
+        ircs, ircc = self.setup_irctest("PONG ramalamadingdong", 1, 3)
 
         ircs.queuemessage(": PING :ramalamadingdong\r\n")
         gevent.wait(timeout=2)
@@ -205,7 +219,7 @@ class TestIRCClient(unittest.TestCase):
         self.assertEqual(ircs.received[-1], "PONG ramalamadingdong\r\n")
 
     def test_events(self):
-        ircs, ircc = TestIRCClient.setup_irctest("thumbsup", 1, 3)
+        ircs, ircc = self.setup_irctest("thumbsup", 1, 3)
 
         def killafter1second():
             gevent.sleep(1)

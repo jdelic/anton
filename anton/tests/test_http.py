@@ -25,6 +25,9 @@ class TestHTTPConnector(unittest.TestCase):
         # remove monkey patching
         reload(socket)
 
+        if not gevent.wait(timeout=5):
+            raise Exception("TestHTTPConnector left hanging Greenlets")
+
     def tearDown(self):
         http.HANDLERS = []  # remove all registered handlers so they don't influence other tests
 
@@ -50,6 +53,9 @@ class TestHTTPConnector(unittest.TestCase):
         self.assertEqual(ircserver.received[-1], "PRIVMSG #test :Eeey!\r\n")
         self.assertEqual(result.text, "Success")
         self.assertEqual(result.headers['Content-type'], "text/plain")
+        ircserver.close()
+        ircclient.stop()
+        http_server.close()
 
     def test_http_404(self):
         @http.register(re.compile("^/thumbsdown$"))
@@ -63,6 +69,7 @@ class TestHTTPConnector(unittest.TestCase):
         http_server.start()
         result = requests.get("http://127.0.0.1:%s/thumbsup" % http_server.server_port)
         self.assertEqual(result.status_code, 404)
+        http_server.stop()
 
     def test_http_autocontenttype(self):
         @http.register(re.compile("^/thumbsup$"))
@@ -77,3 +84,4 @@ class TestHTTPConnector(unittest.TestCase):
         result = requests.get("http://127.0.0.1:%s/thumbsup" % http_server.server_port)
         self.assertEqual(result.text, "Eeey!")
         self.assertEqual(result.headers['Content-type'], "text/plain")
+        http_server.close()
