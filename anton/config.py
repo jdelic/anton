@@ -9,6 +9,18 @@ IRC_MAX_CONNECTATTEMPTS = os.getenv("IRC_MAX_CONNECTATTEMPTS", "0")
 IRC_MAX_MESSAGESPERCONNECTION = os.getenv("IRC_MAX_MESSAGESPERCONNECTION", "0")
 IRC_USESSL = os.getenv("IRC_USESSL", "0")
 
+try:
+    IRC_PING_RECONNECT_TIMEOUT = int(os.getenv("IRC_PING_RECONNECT_TIMEOUT", "60"))
+except ValueError:
+    print("IRC_PING_RECONNECT_TIMEOUT must be a integer (count of seconds)")
+    sys.exit(1)
+
+try:
+    IRC_CONNECTIONCHECK_TIMEOUT = int(os.getenv("IRC_PING_RECONNECT_TIMEOUT", "60"))
+except ValueError:
+    print("IRC_PING_RECONNECT_TIMEOUT must be a integer (count of seconds)")
+    sys.exit(1)
+
 BACKEND = IRC_SERVER, int(IRC_PORT)
 HTTP_ROOT = "/bot"
 HTTP_BINDADDRESS = os.getenv("HTTP_BINDADDRESS", "127.0.0.1")
