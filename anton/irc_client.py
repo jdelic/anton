@@ -1,6 +1,9 @@
+from _ssl import SSLError
 import logging
+import os
 import socket
 import ssl
+import time
 import events
 import gevent
 import gevent.queue
@@ -33,6 +36,7 @@ class IRC(object):
         self._shutdown_event = gevent.event.Event()
         self.started = False
         self.stopped = False
+        self.last_ping = 0
 
     def connect(self, addr):
         """
@@ -53,6 +57,8 @@ class IRC(object):
 
         self.reader_greenlet = gevent.spawn(self._reader)
         self.writer_greenlet = gevent.spawn(self._writer)
+
+        self.last_ping = time.time()  # we have just connected, so let's pretend we just got pinged
         return True
 
     def _reader(self):
@@ -62,13 +68,18 @@ class IRC(object):
 
             line = None
             try:
+                _log.debug("listening %s", self.reader_greenlet)
                 line = self._socket.recv(8192)
-            except socket.error:
+            except socket.error as e:
                 # we swallow the socket.error raised by gevent.socket.cancel_wait_ex here because it's perfectly
                 # normal for another Greenlet to close our underlying socket while we were blocked in recv().
+                _log.debug("socket.error %s %s %s", os.strerror(e.errno), e, self.reader_greenlet)
+                self.disconnect()
                 break
 
             if not line:
+                _log.debug("empty response received from IRC socket '%s' %s", line, self.reader_greenlet)
+                self.disconnect()
                 break
 
             buf += line
@@ -85,7 +96,7 @@ class IRC(object):
 
                 gevent.spawn(self.process_line, j["type"], j.get("data"))
 
-        _log.debug("Message count: %s/%s", self.current_messagecount, self.max_messages)
+        _log.debug("Message count: %s/%s %s", self.current_messagecount, self.max_messages, self.reader_greenlet)
         self.current_messagecount = 0
 
     def _writer(self):
@@ -98,7 +109,14 @@ class IRC(object):
             self.split_send(lambda m: self.write("%s %s :%s" % (msg['type'], msg['target'], m)), msg['message'])
 
     def write(self, message):
-        self._socket.send("%s\r\n" % message.encode("utf8"))
+        try:
+            self._socket.send("%s\r\n" % message.encode("utf8"))
+        except SSLError as e:
+            _log.debug("Sending to server raised %s", e)
+            self.disconnect()
+        except socket.error as e:
+            _log.debug("Sending to server raised %s", e)
+            self.disconnect()
 
     def chanmsg(self, channel, message):
         self._message_queue.put({
@@ -130,7 +148,6 @@ class IRC(object):
 
         for x in util.split_lines(split_data):
             fn(util.decode_irc(x, redecode=False))
-        return
 
     @staticmethod
     def parse_line(s):
@@ -168,6 +185,7 @@ class IRC(object):
 
     def process_line(self, msgtype, obj):
         if msgtype == "PING":
+            self.last_ping = time.time()
             self.write("PONG " + obj["args"][0])
         elif msgtype == "PRIVMSG":
             source = self.to_source(obj["prefix"])
@@ -223,7 +241,14 @@ class IRC(object):
 
                 self.wallops("anton online")
 
-                self._disconnect_event.wait()
+                _log.debug("Entering inner loop with timeout %s", config.IRC_CONNECTIONCHECK_TIMEOUT)
+                while not self._disconnect_event.wait(timeout=config.IRC_CONNECTIONCHECK_TIMEOUT):
+                    t = time.time() - self.last_ping
+                    if t > config.IRC_PING_RECONNECT_TIMEOUT:
+                        # we haven't had a PING in a while... we should assume the connection is broken
+                        _log.warning("PING timeout (%s > %s), reconnecting...", t, config.IRC_PING_RECONNECT_TIMEOUT)
+                        self.disconnect()
+                        break
 
                 if self.allow_reconnect():
                     _log.info("disconnected, retrying in 5s...")
@@ -246,9 +271,19 @@ class IRC(object):
 
         self.stopped = True
         self._shutdown_event.set()
+        self.disconnect()
+
+    def disconnect(self):
         self._disconnect_event.set()
-        self._socket.close()
         self._message_queue.put(StopIteration)
+        try:
+            self._socket.shutdown(socket.SHUT_RDWR)
+            self._socket.close()
+        except socket.error as e:
+            # at this point the socket might already have been closed or gone stale, so this will sometimes
+            # throw errors which are meaningless to us. Shutting down the socket here is about being a good citizen
+            # and sending TCP FIN if we still can.
+            _log.debug("Disconnecting from server raised %s", e)
 
     def run_eventloop(self, timeout=None):
         """

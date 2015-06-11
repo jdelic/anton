@@ -1,9 +1,11 @@
 # -* coding: utf-8 *-
+from _ssl import SSLError
 import logging
 
 import re
 import unittest
 import socket
+import mock
 import anton.config
 import gevent.monkey
 import gevent.server
@@ -68,6 +70,7 @@ class TestIRCServer(gevent.server.StreamServer):
         self._irc_message_queue = gevent.queue.Queue()
         self.checkfor = checkfor
         self.message_received = False
+        self.sockets = []
         super(TestIRCServer, self).__init__(*args, **kwargs)
 
     def handle(self, sock, address):
@@ -75,11 +78,14 @@ class TestIRCServer(gevent.server.StreamServer):
         gevent.spawn(self.write, sock)
 
     def read(self, sock):
+        if sock not in self.sockets:
+            self.sockets.append(sock)
+
         filelike = sock.makefile()
         while True:
             line = filelike.readline()
             if line:
-                _log.debug("Server received %s", line)
+                _log.debug("Server %s received %s", self, line)
                 self.received.append(line)
                 if self.checkfor in line:
                     self.message_received = True
@@ -89,6 +95,9 @@ class TestIRCServer(gevent.server.StreamServer):
                 break
 
     def write(self, sock):
+        if sock not in self.sockets:
+            self.sockets.append(sock)
+
         while self._irc_message_queue.peek():
             msg = self._irc_message_queue.get()
 
@@ -233,6 +242,17 @@ class TestIRCClient(unittest.TestCase):
         self.assertTrue(ircs.message_received)
         self.assertEqual(ircs.received[-1], "PONG ramalamadingdong\r\n")
 
+    def test_ping_timeout(self):
+        anton.config.IRC_PING_RECONNECT_TIMEOUT = 1
+        anton.config.IRC_CONNECTIONCHECK_TIMEOUT = 1
+        ircs, ircc = self.setup_irctest("PONG ramalamadingdong", 1, 0)
+
+        ircs.queuemessage(": PING :ramalamadingdong\r\n")
+        gevent.wait(timeout=5)
+        self.assertTrue(ircs.message_received)
+        self.assertEqual(ircs.received[-1], "PONG ramalamadingdong\r\n")
+        self.assertTrue(ircc._disconnect_event.is_set())
+
     def test_events(self):
         ircs, ircc = self.setup_irctest("thumbsup", 1, 3)
 
@@ -254,3 +274,46 @@ class TestIRCClient(unittest.TestCase):
             self.fail("The writer greenlet hasn't closed shop after the stop event")
 
         gevent.wait(timeout=2)  # if anything else blocks, we find it here
+
+    def test_server_socket_disconnect(self):
+        ircs, ircc = self.setup_irctest("unmatched", 1, 3)
+
+        def close_server_socket_after_1second():
+            gevent.sleep(1)
+            _log.debug("closing server socket")
+            for s in ircs.sockets:
+                s.shutdown(socket.SHUT_RDWR)
+                s.close()
+
+        inner = gevent.spawn(close_server_socket_after_1second)
+        inner.join()
+        ircc._disconnect_event.wait(timeout=1)
+        self.assertTrue(ircc._disconnect_event.is_set())
+
+    def test_client_socket_disconnect(self):
+        ircs, ircc = self.setup_irctest("unmatched", 1, 3)
+
+        def close_client_socket_after_1second():
+            gevent.sleep(1)
+            _log.debug("closing client socket")
+            # this will make gevent.socket.cancel_wait raise socket.error
+            ircc._socket.close()
+
+        inner = gevent.spawn(close_client_socket_after_1second)
+        inner.join()
+        ircc._disconnect_event.wait(timeout=1)
+        self.assertTrue(ircc._disconnect_event.is_set())
+
+    def test_disconnect_on_sslerror(self):
+        ircc = irc_client.IRC()
+        ircc._socket = mock.Mock()
+        ircc._socket.send.side_effect = SSLError("mock ssl error")
+        ircc.write(u"test")
+        self.assertTrue(ircc._disconnect_event.is_set())
+
+    def test_disconnect_on_socketerror(self):
+        ircc = irc_client.IRC()
+        ircc._socket = mock.Mock()
+        ircc._socket.send.side_effect = socket.error("mock socket error")
+        ircc.write(u"test")
+        self.assertTrue(ircc._disconnect_event.is_set())
