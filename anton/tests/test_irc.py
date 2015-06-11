@@ -212,8 +212,8 @@ class TestIRCClient(unittest.TestCase):
             ircc.stop()
             ircs.close()
 
-        gevent.spawn(killafter1second)
-        gevent.sleep(1)
+        inner = gevent.spawn(killafter1second)
+        inner.join(timeout=3)
         try:
             ircc.reader_greenlet.get(timeout=2)
         except gevent.Timeout:
