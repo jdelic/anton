@@ -9,6 +9,8 @@ rpm_build_deps:
     - python2.7-virtualenv-laterpay
     - python2.7-setuptools-laterpay
     - python2.7-pip-laterpay
+    - libffi-devel
+    - openssl-devel
 rpm_run_deps:
     - python2.7-laterpay
     - libevent-devel
