@@ -304,16 +304,30 @@ class TestIRCClient(unittest.TestCase):
         ircc._disconnect_event.wait(timeout=1)
         self.assertTrue(ircc._disconnect_event.is_set())
 
-    def test_disconnect_on_sslerror(self):
+    def test_disconnect_on_send_sslerror(self):
         ircc = irc_client.IRC()
         ircc._socket = mock.Mock()
         ircc._socket.send.side_effect = SSLError("mock ssl error")
         ircc.write(u"test")
         self.assertTrue(ircc._disconnect_event.is_set())
 
-    def test_disconnect_on_socketerror(self):
+    def test_disconnect_on_send_socketerror(self):
         ircc = irc_client.IRC()
         ircc._socket = mock.Mock()
         ircc._socket.send.side_effect = socket.error("mock socket error")
         ircc.write(u"test")
+        self.assertTrue(ircc._disconnect_event.is_set())
+
+    def test_disconnect_on_connect_sslerror(self):
+        ircc = irc_client.IRC()
+        ircc._socket = mock.Mock()
+        ircc._socket.connect.side_effect = SSLError("mock ssl error")
+        ircc.connect(("127.0.0.1", 6667))
+        self.assertTrue(ircc._disconnect_event.is_set())
+
+    def test_disconnect_on_send_socketerror(self):
+        ircc = irc_client.IRC()
+        ircc._socket = mock.Mock()
+        ircc._socket.connect.side_effect = socket.error("mock socket error")
+        ircc.connect(("127.0.0.1", 6667))
         self.assertTrue(ircc._disconnect_event.is_set())

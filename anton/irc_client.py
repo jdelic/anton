@@ -48,7 +48,17 @@ class IRC(object):
         if config.IRC_USESSL in ["yes", "true", "1"]:
             self._socket = ssl.wrap_socket(self._socket)
 
-        self._socket.connect(addr)
+        try:
+            self._socket.connect(addr)
+        except SSLError as e:
+            _log.debug("Connecting to server raised %s", e)
+            self.disconnect()
+            return
+        except socket.error as e:
+            _log.debug("Sending to server raised %s", e)
+            self.disconnect()
+            return
+
         if config.BOT_PASSWORD:
             self._socket.send("PASS %s\r\n" % config.BOT_PASSWORD)
 
@@ -59,7 +69,6 @@ class IRC(object):
         self.writer_greenlet = gevent.spawn(self._writer)
 
         self.last_ping = time.time()  # we have just connected, so let's pretend we just got pinged
-        return True
 
     def _reader(self):
         buf = ""
