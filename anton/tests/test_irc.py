@@ -325,7 +325,7 @@ class TestIRCClient(unittest.TestCase):
         ircc.connect(("127.0.0.1", 6667))
         self.assertTrue(ircc._disconnect_event.is_set())
 
-    def test_disconnect_on_send_socketerror(self):
+    def test_disconnect_on_connect_socketerror(self):
         ircc = irc_client.IRC()
         ircc._socket = mock.Mock()
         ircc._socket.connect.side_effect = socket.error("mock socket error")
