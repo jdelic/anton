@@ -65,6 +65,8 @@ class IRC(object):
         self._socket.send("USER %s %s %s :%s\r\n" % (config.BOT_USERNAME, "wibble", "wibble", config.BOT_REALNAME))
         self._socket.send("NICK %s\r\n" % config.BOT_NICKNAME)
 
+        # empty the queue when we start working to make sure we don't process stale StopIterations
+        self._message_queue.empty()
         self.reader_greenlet = gevent.spawn(self._reader)
         self.writer_greenlet = gevent.spawn(self._writer)
 
@@ -113,6 +115,8 @@ class IRC(object):
             msg = self._message_queue.get()
 
             if msg is StopIteration:
+                _log.debug("Writer Greenlet exiting on StopIteration")
+                # TODO: should this disconnect?
                 return
 
             self.split_send(lambda m: self.write("%s %s :%s" % (msg['type'], msg['target'], m)), msg['message'])
