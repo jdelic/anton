@@ -62,7 +62,7 @@ def register(url_regex):
 
             try:
                 content_type, value = result
-            except TypeError:
+            except ValueError:
                 content_type, value = "text/plain", result
 
             http_callback = context['callback']
