@@ -2,8 +2,6 @@
 
 Anton is a fork of [Holly](https://bitbucket.org/chrisporter/holly/).
 
-Anton currently runs on `anton.laterpay.net`, which is hosted on `irc.laterpay.net`.
-
 At this point Anton has diverged a lot from Holly, however some of our changes might make it upstream at some point :).
 
 ## Upgrading / configuring / tweaking Anton
